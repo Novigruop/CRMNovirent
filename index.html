@@ -1,0 +1,1015 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Inmobiliaria - Monteclaro</title>
+    <style>
+        :root {
+            --primary: #2638bf;
+            --accent: #000000;
+            --bg: #f4f6f8;
+            --white: #ffffff;
+            --st-pendiente: #ffd700; 
+            --st-proceso: #2196f3; 
+            --st-completada: #4caf50; 
+            --st-cancelada: #f44336;
+            --st-disponible: #4caf50;
+            --st-vendido: #f44336;
+            --st-separado: #ff9800;
+            --st-arrendado: #9c27b0;
+            --st-inactivo: #9e9e9e;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            background-color: var(--bg); 
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; 
+        }
+        
+        header { 
+            background: var(--primary); 
+            color: white; 
+            padding: 1.5rem 1rem; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;    
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15); 
+            text-align: center;
+        }
+        .header-branding {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            gap: 10px; 
+            width: 100%;
+        }
+        .logo {
+            width: 400px; 
+            max-width: 90%; 
+            height: auto;
+            object-fit: contain;
+        }
+        .header-text h1 { 
+            margin: 10px 0 5px 0; 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.2; 
+        }
+        .header-text div { 
+            font-size: 1.1rem; 
+            font-weight: 400;
+            opacity: 0.95; 
+        }
+        
+        #loading {
+            margin-top: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .tabs { display: flex; background: white; padding: 0 1rem; border-bottom: 1px solid #ddd; justify-content: center; flex-wrap: wrap; }
+        .tab-btn { background: none; border: none; padding: 15px 20px; cursor: pointer; font-weight: bold; color: #666; border-bottom: 3px solid transparent; transition: 0.3s; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-btn:hover { color: var(--primary); }
+
+        .container { padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; flex: 1; }
+        .module { display: none; animation: fadeIn 0.3s; }
+        .module.active { display: block; }
+        
+        .toolbar { background: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-new { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-new:hover { opacity: 0.8; }
+        .filter-label { font-weight: bold; color: var(--primary); margin-left: 10px; }
+        input, select, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+        input:focus, select:focus { border-color: var(--primary); }
+        
+        .table-responsive { overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: var(--primary); color: white; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; }
+        tr:hover { background: #f9f9f9; cursor: pointer; }
+        .badge { padding: 4px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; color: white; display: inline-block; min-width: 80px; text-align: center; }
+        
+        .bg-pendiente { background: var(--st-pendiente); color: black; }
+        .bg-proceso { background: var(--st-proceso); }
+        .bg-completada { background: var(--st-completada); }
+        .bg-cancelada { background: var(--st-cancelada); }
+        .bg-disponible { background: var(--st-disponible); }
+        .bg-vendido { background: var(--st-vendido); }
+        .bg-separado { background: var(--st-separado); color: black; }
+        .bg-arrendado { background: var(--st-arrendado); }
+        .bg-inactivo { background: var(--st-inactivo); }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; backdrop-filter: blur(2px); }
+        .modal-content { background: white; margin: 2% auto; width: 95%; max-width: 700px; padding: 0; border-radius: 8px; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .modal-header { background: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+        .modal-body { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .modal-body .full-width { grid-column: span 2; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; color: #555; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; box-sizing: border-box; }
+        .form-group textarea { height: 80px; resize: vertical; }
+        
+        /* Sección de fotos en modo lectura */
+        .fotos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin-top: 5px; }
+        .foto-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; }
+        .foto-thumb:hover { opacity: 0.85; }
+        .video-link { display: inline-block; margin-top: 8px; color: var(--primary); font-weight: bold; text-decoration: none; }
+        .video-link:hover { text-decoration: underline; }
+
+        .section-divider { grid-column: span 2; border: none; border-top: 2px solid #eee; margin: 5px 0; }
+        .section-title { grid-column: span 2; font-weight: bold; color: var(--primary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: -5px; }
+
+        input:disabled, select:disabled, textarea:disabled { background: #e9ecef; cursor: not-allowed; color: #777; border-color: #ddd; }
+        
+        .modal-footer { padding: 15px 20px; text-align: right; border-top: 1px solid #eee; }
+        .btn-save { background: var(--accent); color: white; padding: 10px 25px; border: none; cursor: pointer; border-radius: 4px; font-size: 1rem; }
+        .btn-save:disabled { background: #ccc; cursor: wait; }
+
+        footer {
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 20px;
+        }
+        footer strong { color: var(--primary); }
+
+        /* Destacado badge */
+        .badge-destacado { background: #ff6f00; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; margin-left: 4px; vertical-align: middle; }
+
+        @media (max-width: 600px) {
+            .modal-body { grid-template-columns: 1fr; }
+            .modal-body .full-width { grid-column: span 1; }
+            .section-divider, .section-title { grid-column: span 1; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-branding">
+            <img src="MONTECLARO5.png" alt="Logo Monteclaro" class="logo">
+            <div class="header-text">
+                <h1>GESTION INMOBILIARIA</h1>
+                <div>MONTECLARO INMOBILIARIA S.A.S</div>
+                <div>901.968.559-8</div>
+            </div>
+        </div>
+        <div id="loading" style="display:none; font-weight:bold;">🔄 Sincronizando...</div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="verModulo('actividades')">ACTIVIDADES</button>
+        <button class="tab-btn" onclick="verModulo('propiedades')">PROPIEDADES</button>
+        <button class="tab-btn" onclick="verModulo('clientes')">CLIENTES</button>
+    </div>
+
+    <!-- MÓDULO ACTIVIDADES -->
+    <div id="mod-actividades" class="container module active">
+        <div class="toolbar">
+            <button class="btn-new" onclick="abrirModalActividad(true)">+ Nueva Actividad</button>
+            <span class="filter-label">| Filtros:</span>
+            <input type="date" id="fActFecha" onchange="renderActividades()" title="Filtrar Fecha">
+            <select id="fActResp" onchange="renderActividades()">
+                <option value="">Resp: Todos</option>
+                <option value="JUAN ROMERO">JUAN ROMERO</option>
+                <option value="SEBAS CUERVO">SEBAS CUERVO</option>
+            </select>
+            <select id="fActEstado" onchange="renderActividades()">
+                <option value="">Est: Todos</option>
+                <option value="PENDIENTE">PENDIENTE</option>
+                <option value="EN PROCESO">EN PROCESO</option>
+                <option value="COMPLETADA">COMPLETADA</option>
+                <option value="CANCELADA">CANCELADA</option>
+            </select>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>Fecha</th><th>Cliente</th><th>Actividad</th><th>Responsable</th><th>Estado</th><th>Notas</th></tr></thead>
+                <tbody id="tblActividades"><tr><td colspan="6" style="text-align:center">Cargando...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MÓDULO PROPIEDADES -->
+    <div id="mod-propiedades" class="container module">
+        <div class="toolbar">
+            <button class="btn-new" onclick="abrirModalPropiedad(true)">+ Nueva Propiedad</button>
+            <span class="filter-label">| Filtros:</span>
+            <select id="fProNeg" onchange="renderPropiedades()">
+                <option value="">Negocio: Todos</option>
+                <option value="VENTA">VENTA</option>
+                <option value="ARRIENDO">ARRIENDO</option>
+                <option value="PERMUTA">PERMUTA</option>
+            </select>
+            <select id="fProTipo" onchange="renderPropiedades()">
+                <option value="">Tipo: Todos</option>
+                <option value="CASA">CASA</option>
+                <option value="APARTAMENTO">APARTAMENTO</option>
+                <option value="LOTE">LOTE</option>
+                <option value="FINCA">FINCA</option>
+                <option value="LOCAL">LOCAL</option>
+                <option value="OFICINA">OFICINA</option>
+                <option value="BODEGA">BODEGA</option>
+            </select>
+            <select id="fProEstado" onchange="renderPropiedades()">
+                <option value="">Estado: Todos</option>
+                <option value="DISPONIBLE">DISPONIBLE</option>
+                <option value="SEPARADO">SEPARADO</option>
+                <option value="VENDIDO">VENDIDO</option>
+                <option value="ARRENDADO">ARRENDADO</option>
+                <option value="INACTIVO">INACTIVO</option>
+            </select>
+            <select id="fProCiudad" onchange="renderPropiedades()">
+                <option value="">Ciudad: Todas</option>
+            </select>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Negocio</th>
+                        <th>Tipo</th>
+                        <th>Ciudad</th>
+                        <th>Precio</th>
+                        <th>Área</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tblPropiedades"><tr><td colspan="8" style="text-align:center">Cargando...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MÓDULO CLIENTES -->
+    <div id="mod-clientes" class="container module">
+        <div class="toolbar">
+            <button class="btn-new" onclick="abrirModalCliente(true)">+ Nuevo Cliente</button>
+            <span class="filter-label">| Filtros:</span>
+            <select id="fCliTipo" onchange="renderClientes()">
+                <option value="">Tipo: Todos</option>
+                <option value="VENTA">VENTA</option>
+                <option value="ADMINISTRACION">ADMINISTRACION</option>
+                <option value="CREDITO/SUBSIDIO">CREDITO/SUBSIDIO</option>
+            </select>
+            <select id="fCliEstado" onchange="renderClientes()">
+                <option value="">Est: Todos</option>
+                <option value="PENDIENTE">PENDIENTE</option>
+                <option value="EN PROCESO">EN PROCESO</option>
+                <option value="COMPLETADA">COMPLETADA</option>
+                <option value="CANCELADA">CANCELADA</option>
+            </select>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Tipo</th><th>Estado</th><th>Notas</th></tr></thead>
+                <tbody id="tblClientes"><tr><td colspan="6" style="text-align:center">Cargando...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        MONTECLARO INMOBILIARIA S.A.S<br>
+        Desarrollado por <strong>SEBASTIÁN CUERVO</strong><br>
+        <strong>V1.1.0 &copy; 2026</strong>
+    </footer>
+
+    <!-- MODAL ACTIVIDAD -->
+    <div id="modalActividad" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="tModalAct">Gestión Actividad</h3><span style="cursor:pointer; font-size:1.5rem;" onclick="cerrarModales()">&times;</span></div>
+            <div class="modal-body">
+                <input type="hidden" id="actId"><input type="hidden" id="actModo">
+                <div class="form-group full-width">
+                    <label>Cliente (Base de Datos):</label>
+                    <select id="actCliente"><option value="">Cargando lista...</option></select>
+                </div>
+                <div class="form-group full-width"><label>Actividad:</label><textarea id="actDesc" placeholder="Describa la tarea..."></textarea></div>
+                <div class="form-group">
+                    <label>Responsable:</label>
+                    <select id="actResp">
+                        <option value="">Seleccione...</option>
+                        <option value="JUAN ROMERO">JUAN ROMERO</option>
+                        <option value="SEBAS CUERVO">SEBAS CUERVO</option>
+                    </select>
+                </div>
+                <div class="form-group" id="divActEst">
+                    <label>Estado:</label>
+                    <select id="actEst">
+                        <option value="PENDIENTE">PENDIENTE</option>
+                        <option value="EN PROCESO">EN PROCESO</option>
+                        <option value="COMPLETADA">COMPLETADA</option>
+                        <option value="CANCELADA">CANCELADA</option>
+                    </select>
+                </div>
+                <div class="form-group full-width" id="divActNotas"><label>Notas de Seguimiento:</label><textarea id="actNotas"></textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-save" onclick="guardarActividad()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PROPIEDAD -->
+    <div id="modalPropiedad" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="tModalPro">Gestión Propiedad</h3><span style="cursor:pointer; font-size:1.5rem;" onclick="cerrarModales()">&times;</span></div>
+            <div class="modal-body">
+                <input type="hidden" id="proId"><input type="hidden" id="proModo">
+
+                <!-- SECCIÓN: IDENTIFICACIÓN -->
+                <div class="section-title">📋 Identificación</div>
+
+                <div class="form-group full-width">
+                    <label>Título de la Propiedad:</label>
+                    <input type="text" id="proTitulo" placeholder="Ej: Apartamento moderno en el centro">
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Negocio:</label>
+                    <select id="proNegocio">
+                        <option value="VENTA">VENTA</option>
+                        <option value="ARRIENDO">ARRIENDO</option>
+                        <option value="PERMUTA">PERMUTA</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Inmueble:</label>
+                    <select id="proTipo">
+                        <option value="CASA">CASA</option>
+                        <option value="APARTAMENTO">APARTAMENTO</option>
+                        <option value="LOTE">LOTE</option>
+                        <option value="FINCA">FINCA</option>
+                        <option value="LOCAL">LOCAL</option>
+                        <option value="OFICINA">OFICINA</option>
+                        <option value="BODEGA">BODEGA</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Estado:</label>
+                    <select id="proEstado">
+                        <option value="DISPONIBLE">DISPONIBLE</option>
+                        <option value="SEPARADO">SEPARADO</option>
+                        <option value="VENDIDO">VENDIDO</option>
+                        <option value="ARRENDADO">ARRENDADO</option>
+                        <option value="INACTIVO">INACTIVO</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Destacado:</label>
+                    <select id="proDestacado">
+                        <option value="NO">NO</option>
+                        <option value="SI">SI</option>
+                    </select>
+                </div>
+
+                <hr class="section-divider">
+                <!-- SECCIÓN: UBICACIÓN -->
+                <div class="section-title">📍 Ubicación</div>
+
+                <div class="form-group">
+                    <label>País:</label>
+                    <input type="text" id="proPais" value="Colombia">
+                </div>
+                <div class="form-group">
+                    <label>Departamento:</label>
+                    <input type="text" id="proDepartamento" value="Risaralda">
+                </div>
+                <div class="form-group">
+                    <label>Ciudad:</label>
+                    <input type="text" id="proCiudad" value="Pereira">
+                </div>
+                <div class="form-group">
+                    <label>Localidad / Barrio:</label>
+                    <input type="text" id="proLocalidad" placeholder="Ej: El Poblado">
+                </div>
+
+                <hr class="section-divider">
+                <!-- SECCIÓN: CARACTERÍSTICAS -->
+                <div class="section-title">🏠 Características</div>
+
+                <div class="form-group">
+                    <label>Precio (COP):</label>
+                    <input type="number" id="proPrecio">
+                </div>
+                <div class="form-group">
+                    <label>Área (m²):</label>
+                    <input type="number" id="proArea">
+                </div>
+                <div class="form-group">
+                    <label>Alcobas:</label>
+                    <input type="number" id="proAlcobas" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Baños:</label>
+                    <input type="number" id="proBanos" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Estrato:</label>
+                    <select id="proEstrato">
+                        <option value="">Seleccione...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Piso:</label>
+                    <input type="number" id="proPiso" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Año de Construcción:</label>
+                    <input type="number" id="proAno" placeholder="Ej: 2010">
+                </div>
+                <div class="form-group">
+                    <label>Admin (COP/mes):</label>
+                    <input type="number" id="proAdmin">
+                </div>
+                <div class="form-group">
+                    <label>Garaje (cantidad):</label>
+                    <input type="number" id="proGaraje" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Parqueaderos Internos:</label>
+                    <input type="number" id="proInternas" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Parqueaderos Externos:</label>
+                    <input type="number" id="proExternas" min="0" value="0">
+                </div>
+
+                <hr class="section-divider">
+                <!-- SECCIÓN: DESCRIPCIÓN -->
+                <div class="section-title">📝 Descripción</div>
+                <div class="form-group full-width">
+                    <label>Descripción:</label>
+                    <textarea id="proDescripcion" style="height:100px;" placeholder="Describa la propiedad para publicación..."></textarea>
+                </div>
+
+                <!-- SECCIÓN FOTOS (solo lectura, visible al editar) -->
+                <div id="divFotos" style="display:none;" class="full-width">
+                    <hr class="section-divider" style="margin-bottom:10px;">
+                    <div class="section-title" style="margin-bottom:10px;">📷 Fotos</div>
+                    <div class="fotos-grid" id="fotosGrid"></div>
+                    <div id="videoLink"></div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn-save" onclick="guardarPropiedad()">Guardar Propiedad</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CLIENTE -->
+    <div id="modalCliente" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="tModalCli">Gestión Cliente</h3><span style="cursor:pointer; font-size:1.5rem;" onclick="cerrarModales()">&times;</span></div>
+            <div class="modal-body">
+                <input type="hidden" id="cliId"><input type="hidden" id="cliModo">
+                <div class="form-group"><label>Nombre:</label><input type="text" id="cliNom"></div>
+                <div class="form-group"><label>Cédula/NIT:</label><input type="text" id="cliCed"></div>
+                <div class="form-group"><label>Teléfono:</label><input type="text" id="cliTel"></div>
+                <div class="form-group"><label>Correo:</label><input type="text" id="cliCor"></div>
+                <div class="form-group full-width"><label>Dirección:</label><input type="text" id="cliDir"></div>
+                <div class="form-group"><label>Presupuesto/Valor:</label><input type="text" id="cliPre"></div>
+                <div class="form-group"><label>Tipo Servicio:</label>
+                    <select id="cliTipo">
+                        <option value="VENTA">VENTA</option>
+                        <option value="ADMINISTRACION">ADMINISTRACION</option>
+                        <option value="CREDITO/SUBSIDIO">CREDITO/SUBSIDIO</option>
+                    </select>
+                </div>
+                <div class="form-group" id="divCliEst">
+                    <label>Estado:</label>
+                    <select id="cliEst">
+                        <option value="PENDIENTE">PENDIENTE</option>
+                        <option value="EN PROCESO">EN PROCESO</option>
+                        <option value="COMPLETADA">COMPLETADA</option>
+                        <option value="CANCELADA">CANCELADA</option>
+                    </select>
+                </div>
+                <div class="form-group full-width" id="divCliNotas"><label>Notas / Observaciones:</label><textarea id="cliNotas"></textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-save" onclick="guardarCliente()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API principal (Actividades y Clientes)
+        const API = "https://script.google.com/macros/s/AKfycbyhFfbZnfsNcw_lWSOP04TLHASe8EcZ27YTW3ywQpkT7HS3NnJy9hxuZuh4iUBZYSH5/exec";
+        
+        // API exclusivo para Propiedades
+        const API_PROP = "https://script.google.com/macros/s/AKfycbxl9HkxY4sl0qFur1xDJcXSl-jqzu94r2zHBpMFTmlIuf9Vrq0te2aSbUItR8LDew9x/exec";
+
+        // CSV del Sheet nuevo de Propiedades
+        const CSV_PROPIEDADES = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRtjvmrg08yraJvooDmMPA6kJ46J66ur70Ykx_1DDOUJap23arMVX-HSdZA5OVHCMeI_yIkkZlWh83R/pub?output=csv&sheet=PROPIEDADES";
+
+        let dAct = [], dCli = [], dProp = [];
+
+        window.onload = () => {
+            cargarActividades();
+            cargarPropiedades();
+            cargarClientes(true);
+        };
+
+        function verModulo(m) {
+            document.querySelectorAll('.module').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
+            document.getElementById('mod-'+m).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // --- CARGA DE DATOS ---
+        async function cargarActividades() {
+            try {
+                let r = await fetch(API + "?action=read_actividades");
+                let j = await r.json();
+                if(j.status === 'success') { dAct = j.data; renderActividades(); }
+            } catch(e) { console.error(e); }
+        }
+
+        async function cargarClientes(silencioso = false) {
+            if(!silencioso) document.getElementById('loading').style.display = 'block';
+            try {
+                let r = await fetch(API + "?action=read_clientes");
+                let j = await r.json();
+                if(j.status === 'success') { dCli = j.data; renderClientes(); }
+            } catch(e) { console.error(e); }
+            if(!silencioso) document.getElementById('loading').style.display = 'none';
+        }
+
+        // PROPIEDADES: leer desde CSV público
+        async function cargarPropiedades() {
+            document.getElementById('tblPropiedades').innerHTML = "<tr><td colspan='8' style='text-align:center'>🔄 Cargando propiedades...</td></tr>";
+            try {
+                let r = await fetch(CSV_PROPIEDADES);
+                let texto = await r.text();
+                dProp = parsearCSV(texto);
+                poblarFiltroCiudad();
+                renderPropiedades();
+            } catch(e) {
+                console.error(e);
+                document.getElementById('tblPropiedades').innerHTML = "<tr><td colspan='8' style='text-align:center;color:red'>Error al cargar propiedades</td></tr>";
+            }
+        }
+
+        // Parsear CSV con soporte para campos entre comillas
+        function parsearCSV(texto) {
+            let lineas = texto.split('\n').filter(l => l.trim() !== '');
+            if(lineas.length < 2) return [];
+            
+            let headers = parsearLineaCSV(lineas[0]);
+            let datos = [];
+            
+            for(let i = 1; i < lineas.length; i++) {
+                let valores = parsearLineaCSV(lineas[i]);
+                if(valores.length === 0) continue;
+                let obj = {};
+                headers.forEach((h, idx) => {
+                    obj[h.trim().toUpperCase()] = (valores[idx] || '').trim();
+                });
+                datos.push(obj);
+            }
+            return datos;
+        }
+
+        function parsearLineaCSV(linea) {
+            let resultado = [];
+            let actual = '';
+            let dentroCom = false;
+            for(let i = 0; i < linea.length; i++) {
+                let c = linea[i];
+                if(c === '"') {
+                    dentroCom = !dentroCom;
+                } else if(c === ',' && !dentroCom) {
+                    resultado.push(actual);
+                    actual = '';
+                } else {
+                    actual += c;
+                }
+            }
+            resultado.push(actual);
+            return resultado;
+        }
+
+        function poblarFiltroCiudad() {
+            let sel = document.getElementById('fProCiudad');
+            let ciudades = [...new Set(dProp.map(p => p.CIUDAD).filter(Boolean))].sort();
+            sel.innerHTML = '<option value="">Ciudad: Todas</option>';
+            ciudades.forEach(c => {
+                let opt = document.createElement('option');
+                opt.value = c; opt.text = c;
+                sel.appendChild(opt);
+            });
+        }
+
+        // --- RENDERIZADO ---
+        function renderActividades() {
+            let tb = document.getElementById('tblActividades');
+            tb.innerHTML = "";
+            let fF = document.getElementById('fActFecha').value;
+            let fR = document.getElementById('fActResp').value;
+            let fE = document.getElementById('fActEstado').value;
+
+            let fil = dAct.filter(i => {
+                let fechaOk = true;
+                let fechaItem = i.FECHA || "";
+                if(fF) fechaOk = fechaItem.includes(fF) || (new Date(fechaItem).toISOString().startsWith(fF));
+                let respOk = !fR || i.RESPONSABLE == fR;
+                let estOk = !fE || i.ESTADO == fE;
+                return fechaOk && respOk && estOk;
+            });
+
+            if(fil.length === 0) { tb.innerHTML = "<tr><td colspan='6' style='text-align:center'>No hay datos</td></tr>"; return; }
+
+            fil.forEach(i => {
+                let tr = document.createElement('tr');
+                tr.onclick = () => abrirModalActividad(false, i);
+                let fechaStr = i.FECHA ? new Date(i.FECHA).toLocaleDateString() : '';
+                tr.innerHTML = `<td>${fechaStr}</td><td>${i.CLIENTE}</td><td>${i.ACTIVIDAD}</td><td>${i.RESPONSABLE}</td>
+                                <td><span class="badge ${color(i.ESTADO)}">${i.ESTADO}</span></td><td><small>${i.NOTAS||''}</small></td>`;
+                tb.appendChild(tr);
+            });
+        }
+
+        function renderPropiedades() {
+            let tb = document.getElementById('tblPropiedades');
+            tb.innerHTML = "";
+            let fN = document.getElementById('fProNeg').value;
+            let fT = document.getElementById('fProTipo').value;
+            let fE = document.getElementById('fProEstado').value;
+            let fC = document.getElementById('fProCiudad').value;
+
+            let fil = dProp.filter(i =>
+                (!fN || i.NEGOCIO == fN) &&
+                (!fT || i.TIPO == fT) &&
+                (!fE || i.ESTADO == fE) &&
+                (!fC || i.CIUDAD == fC)
+            );
+
+            if(fil.length === 0) { tb.innerHTML = "<tr><td colspan='8' style='text-align:center'>No hay propiedades</td></tr>"; return; }
+
+            fil.forEach(i => {
+                let tr = document.createElement('tr');
+                tr.onclick = () => abrirModalPropiedad(false, i);
+                let precio = i.PRECIO ? new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(i.PRECIO) : '$0';
+                let destacadoBadge = (i.DESTACADO === 'SI') ? '<span class="badge-destacado">⭐ DEST.</span>' : '';
+
+                tr.innerHTML = `
+                    <td><small>${i.ID || ''}</small></td>
+                    <td>${i.TITULO || ''}${destacadoBadge}</td>
+                    <td>${i.NEGOCIO || ''}</td>
+                    <td>${i.TIPO || ''}</td>
+                    <td><small>${i.CIUDAD || ''}${i.LOCALIDAD ? ', '+i.LOCALIDAD : ''}</small></td>
+                    <td style="font-weight:bold">${precio}</td>
+                    <td>${i.AREA ? i.AREA+'m²' : ''}</td>
+                    <td><span class="badge ${color(i.ESTADO)}">${i.ESTADO||''}</span></td>`;
+                tb.appendChild(tr);
+            });
+        }
+
+        function renderClientes() {
+            let tb = document.getElementById('tblClientes');
+            tb.innerHTML = "";
+            let fT = document.getElementById('fCliTipo').value;
+            let fE = document.getElementById('fCliEstado').value;
+            let fil = dCli.filter(i => (!fT || i.TIPO_SERVICIO == fT) && (!fE || i.ESTADO_CLIENTE == fE));
+            if(fil.length === 0) { tb.innerHTML = "<tr><td colspan='6' style='text-align:center'>No hay datos</td></tr>"; return; }
+            fil.forEach(i => {
+                let tr = document.createElement('tr');
+                tr.onclick = () => abrirModalCliente(false, i);
+                tr.innerHTML = `<td>${i.NOMBRE}</td><td>${i.CEDULA_NIT}</td><td>${i.TELEFONO}</td><td>${i.TIPO_SERVICIO}</td>
+                                <td><span class="badge ${color(i.ESTADO_CLIENTE)}">${i.ESTADO_CLIENTE}</span></td><td><small>${i.NOTAS||''}</small></td>`;
+                tb.appendChild(tr);
+            });
+        }
+
+        // --- MODALES ---
+        function abrirModalActividad(esNuevo, item) {
+            document.getElementById('modalActividad').style.display = 'block';
+            let sel = document.getElementById('actCliente');
+            sel.innerHTML = '<option value="">Seleccione Cliente...</option>';
+            dCli.sort((a,b) => (a.NOMBRE||"").localeCompare(b.NOMBRE||"")).forEach(c => {
+                let opt = document.createElement('option');
+                opt.value = c.NOMBRE; opt.text = c.NOMBRE; sel.appendChild(opt);
+            });
+            if(esNuevo) {
+                document.getElementById('tModalAct').innerText = "Nueva Actividad";
+                document.getElementById('actModo').value = "create";
+                document.getElementById('actId').value = "";
+                sel.value = ""; sel.disabled = false;
+                document.getElementById('actDesc').value = ""; document.getElementById('actDesc').disabled = false;
+                document.getElementById('actResp').value = ""; document.getElementById('actResp').disabled = false;
+                document.getElementById('actNotas').value = "";
+                document.getElementById('actEst').value = "PENDIENTE";
+                document.getElementById('divActEst').style.display = 'block';
+                document.getElementById('divActNotas').style.display = 'none';
+            } else {
+                document.getElementById('tModalAct').innerText = "Editar Actividad";
+                document.getElementById('actModo').value = "edit";
+                document.getElementById('actId').value = item.ID;
+                sel.value = item.CLIENTE; sel.disabled = true;
+                document.getElementById('actDesc').value = item.ACTIVIDAD; document.getElementById('actDesc').disabled = true;
+                document.getElementById('actResp').value = item.RESPONSABLE; document.getElementById('actResp').disabled = true;
+                document.getElementById('actEst').value = item.ESTADO;
+                document.getElementById('actNotas').value = item.NOTAS;
+                document.getElementById('divActEst').style.display = 'block';
+                document.getElementById('divActNotas').style.display = 'block';
+            }
+        }
+
+        function abrirModalPropiedad(esNuevo, item) {
+            document.getElementById('modalPropiedad').style.display = 'block';
+            document.getElementById('divFotos').style.display = 'none';
+            document.getElementById('fotosGrid').innerHTML = '';
+            document.getElementById('videoLink').innerHTML = '';
+
+            // Campos del formulario
+            const campos = ['proTitulo','proNegocio','proTipo','proEstado','proDestacado',
+                            'proPais','proDepartamento','proCiudad','proLocalidad',
+                            'proPrecio','proArea','proAlcobas','proBanos','proEstrato',
+                            'proPiso','proAno','proAdmin','proGaraje','proInternas','proExternas','proDescripcion'];
+
+            if(esNuevo) {
+                document.getElementById('tModalPro').innerText = "Nueva Propiedad";
+                document.getElementById('proModo').value = "create";
+                document.getElementById('proId').value = "";
+
+                campos.forEach(id => {
+                    let el = document.getElementById(id);
+                    if(el) { el.value = ""; el.disabled = false; }
+                });
+                // Defaults
+                document.getElementById('proPais').value = "Colombia";
+                document.getElementById('proDepartamento').value = "Risaralda";
+                document.getElementById('proCiudad').value = "Pereira";
+                document.getElementById('proEstado').value = "DISPONIBLE";
+                document.getElementById('proDestacado').value = "NO";
+                document.getElementById('proGaraje').value = "0";
+                document.getElementById('proInternas').value = "0";
+                document.getElementById('proExternas').value = "0";
+
+            } else {
+                document.getElementById('tModalPro').innerText = "Propiedad: " + (item.ID || '');
+                document.getElementById('proModo').value = "edit";
+                document.getElementById('proId').value = item.ID || '';
+
+                // Llenar campos
+                document.getElementById('proTitulo').value       = item.TITULO || '';
+                document.getElementById('proNegocio').value      = item.NEGOCIO || '';
+                document.getElementById('proTipo').value         = item.TIPO || '';
+                document.getElementById('proEstado').value       = item.ESTADO || 'DISPONIBLE';
+                document.getElementById('proDestacado').value    = item.DESTACADO || 'NO';
+                document.getElementById('proPais').value         = item.PAIS || 'Colombia';
+                document.getElementById('proDepartamento').value = item.DEPARTAMENTO || '';
+                document.getElementById('proCiudad').value       = item.CIUDAD || '';
+                document.getElementById('proLocalidad').value    = item.LOCALIDAD || '';
+                document.getElementById('proPrecio').value       = item.PRECIO || '';
+                document.getElementById('proArea').value         = item.AREA || '';
+                document.getElementById('proAlcobas').value      = item.ALCOBAS || '';
+                document.getElementById('proBanos').value        = item.BANOS || '';
+                document.getElementById('proEstrato').value      = item.ESTRATO || '';
+                document.getElementById('proPiso').value         = item.PISO || '';
+                document.getElementById('proAno').value          = item.ANO || '';
+                document.getElementById('proAdmin').value        = item.ADMIN || '';
+                document.getElementById('proGaraje').value       = item.GARAJE || 'NO';
+                document.getElementById('proInternas').value     = item.INTERNAS || '0';
+                document.getElementById('proExternas').value     = item.EXTERNAS || '0';
+                document.getElementById('proDescripcion').value  = item.DESCRIPCION || '';
+
+                // Bloquear campos de identificación al editar
+                ['proTitulo','proNegocio','proTipo','proPais','proDepartamento','proCiudad',
+                 'proLocalidad','proArea','proAlcobas','proBanos','proEstrato','proPiso','proAno'].forEach(id => {
+                    let el = document.getElementById(id);
+                    if(el) el.disabled = true;
+                });
+
+                // Mostrar fotos si existen
+                let fotos = [];
+                for(let i = 1; i <= 10; i++) {
+                    let url = item['FOTO'+i];
+                    if(url && url.trim() !== '') fotos.push(url.trim());
+                }
+                if(fotos.length > 0 || (item.VIDEO && item.VIDEO.trim())) {
+                    document.getElementById('divFotos').style.display = 'block';
+                    let grid = document.getElementById('fotosGrid');
+                    fotos.forEach(url => {
+                        let img = document.createElement('img');
+                        img.src = url;
+                        img.className = 'foto-thumb';
+                        img.onclick = () => window.open(url, '_blank');
+                        img.onerror = () => img.style.display = 'none';
+                        grid.appendChild(img);
+                    });
+                    if(item.VIDEO && item.VIDEO.trim()) {
+                        let vDiv = document.getElementById('videoLink');
+                        vDiv.innerHTML = `<a href="${item.VIDEO.trim()}" target="_blank" class="video-link">🎥 Ver video de la propiedad</a>`;
+                    }
+                }
+            }
+        }
+
+        function abrirModalCliente(esNuevo, item) {
+            document.getElementById('modalCliente').style.display = 'block';
+            let ids = ['cliNom','cliCed','cliTel','cliCor','cliDir','cliPre','cliTipo'];
+            if(esNuevo) {
+                document.getElementById('tModalCli').innerText = "Nuevo Cliente";
+                document.getElementById('cliModo').value = "create";
+                document.getElementById('cliId').value = "";
+                ids.forEach(id => { let el = document.getElementById(id); el.value=""; el.disabled=false; });
+                document.getElementById('cliEst').value = "PENDIENTE";
+                document.getElementById('divCliEst').style.display = 'block';
+                document.getElementById('divCliNotas').style.display = 'none';
+            } else {
+                document.getElementById('tModalCli').innerText = "Editar Cliente";
+                document.getElementById('cliModo').value = "edit";
+                document.getElementById('cliId').value = item.ID_CLIENTE;
+                document.getElementById('cliNom').value = item.NOMBRE;
+                document.getElementById('cliCed').value = item.CEDULA_NIT;
+                document.getElementById('cliTel').value = item.TELEFONO;
+                document.getElementById('cliCor').value = item.CORREO;
+                document.getElementById('cliDir').value = item.DIRECCION;
+                document.getElementById('cliPre').value = item.PRESUPUESTO;
+                document.getElementById('cliTipo').value = item.TIPO_SERVICIO;
+                document.getElementById('cliEst').value = item.ESTADO_CLIENTE;
+                document.getElementById('cliNotas').value = item.NOTAS;
+                ids.forEach(id => document.getElementById(id).disabled = true);
+                document.getElementById('divCliEst').style.display = 'block';
+                document.getElementById('divCliNotas').style.display = 'block';
+            }
+        }
+
+        // --- GUARDAR ---
+        async function guardarActividad() {
+            let modo = document.getElementById('actModo').value;
+            let btn = document.querySelector('#modalActividad .btn-save');
+            if(modo == 'create' && !document.getElementById('actCliente').value) return alert("Seleccione un cliente");
+            let fd = new FormData();
+            if(modo=='create') {
+                fd.append('action','create_actividad');
+                fd.append('cliente', document.getElementById('actCliente').value);
+                fd.append('actividad', document.getElementById('actDesc').value);
+                fd.append('responsable', document.getElementById('actResp').value);
+                fd.append('estado', document.getElementById('actEst').value);
+            } else {
+                fd.append('action','update_actividad');
+                fd.append('id', document.getElementById('actId').value);
+                fd.append('estado', document.getElementById('actEst').value);
+                fd.append('notas', document.getElementById('actNotas').value);
+            }
+            await enviar(fd, btn, cargarActividades);
+        }
+
+        async function guardarPropiedad() {
+            let modo = document.getElementById('proModo').value;
+            let btn = document.querySelector('#modalPropiedad .btn-save');
+
+            let datos;
+            if(modo=='create') {
+                if(!document.getElementById('proTitulo').value) return alert("Ingrese el título de la propiedad");
+                datos = {
+                    action:       'create_propiedad',
+                    titulo:       document.getElementById('proTitulo').value,
+                    negocio:      document.getElementById('proNegocio').value,
+                    tipo:         document.getElementById('proTipo').value,
+                    estado:       document.getElementById('proEstado').value,
+                    destacado:    document.getElementById('proDestacado').value,
+                    pais:         document.getElementById('proPais').value,
+                    departamento: document.getElementById('proDepartamento').value,
+                    ciudad:       document.getElementById('proCiudad').value,
+                    localidad:    document.getElementById('proLocalidad').value,
+                    precio:       document.getElementById('proPrecio').value,
+                    area:         document.getElementById('proArea').value,
+                    alcobas:      document.getElementById('proAlcobas').value,
+                    banos:        document.getElementById('proBanos').value,
+                    estrato:      document.getElementById('proEstrato').value,
+                    piso:         document.getElementById('proPiso').value,
+                    ano:          document.getElementById('proAno').value,
+                    admin:        document.getElementById('proAdmin').value,
+                    garaje:       document.getElementById('proGaraje').value,
+                    internas:     document.getElementById('proInternas').value,
+                    externas:     document.getElementById('proExternas').value,
+                    descripcion:  document.getElementById('proDescripcion').value
+                };
+            } else {
+                datos = {
+                    action:      'update_propiedad',
+                    id:          document.getElementById('proId').value,
+                    estado:      document.getElementById('proEstado').value,
+                    precio:      document.getElementById('proPrecio').value,
+                    admin:       document.getElementById('proAdmin').value,
+                    garaje:      document.getElementById('proGaraje').value,
+                    internas:    document.getElementById('proInternas').value,
+                    externas:    document.getElementById('proExternas').value,
+                    destacado:   document.getElementById('proDestacado').value,
+                    descripcion: document.getElementById('proDescripcion').value
+                };
+            }
+            await enviarJSON(datos, btn, cargarPropiedades);
+        }
+
+        async function enviarJSON(datos, btn, callback) {
+            btn.disabled = true;
+            btn.innerText = "Guardando...";
+            try {
+                let r = await fetch(API_PROP, {
+                    method: 'POST',
+                    body: JSON.stringify(datos)
+                });
+                let j = await r.json();
+                if(j.status === 'success') {
+                    alert("Guardado exitosamente");
+                    cerrarModales();
+                    if(callback) callback();
+                } else {
+                    alert("Error: " + (j.message || 'Error desconocido'));
+                }
+            } catch(e) {
+                console.error(e);
+                alert("Hubo un error al guardar: " + e.message);
+            }
+            btn.disabled = false;
+            btn.innerText = "Guardar";
+        }
+
+        async function guardarCliente() {
+            let modo = document.getElementById('cliModo').value;
+            let btn = document.querySelector('#modalCliente .btn-save');
+            let fd = new FormData();
+            if(modo=='create') {
+                fd.append('action','create_cliente');
+                fd.append('nombre',     document.getElementById('cliNom').value);
+                fd.append('cedula',     document.getElementById('cliCed').value);
+                fd.append('telefono',   document.getElementById('cliTel').value);
+                fd.append('correo',     document.getElementById('cliCor').value);
+                fd.append('direccion',  document.getElementById('cliDir').value);
+                fd.append('presupuesto',document.getElementById('cliPre').value);
+                fd.append('tipo',       document.getElementById('cliTipo').value);
+                fd.append('estado',     document.getElementById('cliEst').value);
+            } else {
+                fd.append('action','update_cliente');
+                fd.append('id',     document.getElementById('cliId').value);
+                fd.append('estado', document.getElementById('cliEst').value);
+                fd.append('notas',  document.getElementById('cliNotas').value);
+            }
+            await enviar(fd, btn, () => { cargarClientes(); cargarActividades(); });
+        }
+
+        async function enviar(fd, btn, callback, apiUrl) {
+            let url = apiUrl || API;
+            btn.disabled = true;
+            btn.innerText = "Guardando...";
+            try {
+                await fetch(url, {method:'POST', body:fd});
+                alert("Guardado exitosamente");
+                cerrarModales();
+                if(callback) callback();
+            } catch(e) {
+                console.error(e);
+                alert("Hubo un error al guardar");
+            }
+            btn.disabled = false;
+            btn.innerText = "Guardar";
+        }
+
+        function cerrarModales() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
+
+        function color(e) {
+            if(!e) return '';
+            const map = {
+                'PENDIENTE':'bg-pendiente','EN PROCESO':'bg-proceso','COMPLETADA':'bg-completada','CANCELADA':'bg-cancelada',
+                'DISPONIBLE':'bg-disponible','VENDIDO':'bg-vendido','ARRENDADO':'bg-arrendado','SEPARADO':'bg-separado','INACTIVO':'bg-inactivo'
+            };
+            return map[e] || '';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) cerrarModales();
+        }
+    </script>
+</body>
+</html>
