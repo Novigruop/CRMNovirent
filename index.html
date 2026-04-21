@@ -23,9 +23,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--black); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; }
 
+        /* HEADER */
         header { background: var(--black-2); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 80px; position: sticky; top: 0; z-index: 100; }
         .logo-area { display: flex; align-items: center; gap: 14px; }
-        .logo-mark { width: 44px; height: 44px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+        .logo-mark { width: 44px; height: 44px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
+        .logo-text { display: flex; flex-direction: column; }
         .logo-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; color: var(--gold); letter-spacing: 4px; text-transform: uppercase; line-height: 1; }
         .logo-sub { font-size: 0.6rem; letter-spacing: 3px; color: var(--white-dim); text-transform: uppercase; font-weight: 500; }
         .header-right { display: flex; align-items: center; gap: 16px; }
@@ -33,6 +35,7 @@
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
         .header-badge { font-size: 0.65rem; letter-spacing: 2px; color: var(--white-dim); border: 1px solid var(--border); padding: 4px 10px; }
 
+        /* TABS */
         .tabs { background: var(--black-2); border-bottom: 1px solid var(--border); display: flex; padding: 0 2rem; }
         .tab-btn { background: none; border: none; padding: 16px 28px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--white-dim); border-bottom: 2px solid transparent; transition: all 0.3s; position: relative; }
         .tab-btn::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, var(--gold-dim), var(--gold-light)); transition: width 0.3s; }
@@ -41,21 +44,26 @@
         .tab-btn.active { color: var(--gold); }
         .tab-btn.active::after { width: 100%; }
 
+        /* LAYOUT */
         .container { padding: 30px; max-width: 1400px; margin: 0 auto; width: 100%; flex: 1; }
         .module { display: none; animation: fadeIn 0.4s ease; }
         .module.active { display: block; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
+        /* TOOLBAR */
         .toolbar { background: var(--black-3); border: 1px solid var(--border); padding: 14px 20px; margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
         .btn-new { background: linear-gradient(135deg, var(--gold-dim), var(--gold)); color: var(--black); border: none; padding: 10px 22px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s; }
         .btn-new:hover { background: linear-gradient(135deg, var(--gold), var(--gold-light)); box-shadow: 0 4px 20px rgba(201,168,76,0.3); }
         .filter-sep { width: 1px; height: 24px; background: var(--border-bright); margin: 0 4px; }
         .filter-label { font-size: 0.65rem; letter-spacing: 2px; color: var(--gold-dim); text-transform: uppercase; font-weight: 600; }
 
+        /* INPUTS */
         input, select, textarea { background: var(--black-4); border: 1px solid var(--border); color: var(--white); padding: 9px 12px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; outline: none; transition: border-color 0.3s; }
         input:focus, select:focus, textarea:focus { border-color: var(--gold); }
         select option { background: var(--black-3); }
+        input:disabled, select:disabled, textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        /* TABLE */
         .table-responsive { overflow-x: auto; background: var(--black-2); border: 1px solid var(--border); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
         thead tr { background: var(--black-3); border-bottom: 2px solid var(--gold-dim); }
@@ -65,6 +73,7 @@
         tbody tr:hover { background: var(--black-3); }
         tbody tr:last-child td { border-bottom: none; }
 
+        /* BADGES */
         .badge { padding: 4px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; display: inline-block; }
         .bg-pendiente   { background: rgba(201,168,76,0.15);  color: var(--gold);  border: 1px solid rgba(201,168,76,0.4); }
         .bg-proceso     { background: rgba(74,144,217,0.15);  color: #4A90D9;      border: 1px solid rgba(74,144,217,0.4); }
@@ -77,18 +86,20 @@
         .bg-inactivo    { background: rgba(85,85,85,0.3);     color: #777;         border: 1px solid rgba(85,85,85,0.4); }
         .badge-destacado { background: linear-gradient(135deg, var(--gold-dim), var(--gold)); color: var(--black); padding: 2px 7px; font-size: 0.55rem; font-weight: 800; margin-left: 6px; vertical-align: middle; }
 
+        /* STATS */
         .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
         .stat-card { background: var(--black-3); border: 1px solid var(--border); padding: 18px 20px; position: relative; overflow: hidden; }
         .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(180deg, var(--gold), var(--gold-dim)); }
         .stat-label { font-size: 0.6rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--white-dim); margin-bottom: 8px; font-weight: 600; }
         .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--gold-light); line-height: 1; }
 
+        /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 1000; backdrop-filter: blur(4px); overflow-y: auto; }
         .modal-content { background: var(--black-2); border: 1px solid var(--border-bright); margin: 30px auto; width: 95%; max-width: 720px; box-shadow: 0 0 60px rgba(201,168,76,0.1), 0 20px 60px rgba(0,0,0,0.6); animation: slideUp 0.3s ease; }
         @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         .modal-header { background: var(--black-3); border-bottom: 1px solid var(--border-bright); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
         .modal-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--gold-light); letter-spacing: 2px; }
-        .modal-close { background: none; border: none; color: var(--white-dim); font-size: 1.4rem; cursor: pointer; transition: color 0.2s; }
+        .modal-close { background: none; border: none; color: var(--white-dim); font-size: 1.4rem; cursor: pointer; transition: color 0.2s; line-height: 1; }
         .modal-close:hover { color: var(--gold); }
         .modal-body { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .modal-body .full-width { grid-column: span 2; }
@@ -97,7 +108,6 @@
         .form-group textarea { height: 80px; resize: vertical; }
         .section-title { grid-column: span 2; font-size: 0.62rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); padding-bottom: 8px; border-bottom: 1px solid var(--border); }
         .section-divider { grid-column: span 2; border: none; border-top: 1px solid var(--border); margin: 4px 0; }
-        input:disabled, select:disabled, textarea:disabled { opacity: 0.5; cursor: not-allowed; }
         .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; background: var(--black-3); }
         .btn-cancel { background: none; border: 1px solid var(--border-bright); color: var(--white-dim); padding: 10px 22px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; transition: all 0.2s; }
         .btn-cancel:hover { color: var(--white); border-color: var(--white); }
@@ -105,16 +115,20 @@
         .btn-save:hover { background: linear-gradient(135deg, var(--gold), var(--gold-light)); box-shadow: 0 4px 20px rgba(201,168,76,0.35); }
         .btn-save:disabled { background: var(--black-5); color: var(--white-dim); cursor: wait; }
 
+        /* FOTOS */
         .fotos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; margin-top: 8px; }
         .foto-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s; }
         .foto-thumb:hover { border-color: var(--gold); }
         .video-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; color: var(--gold); font-size: 0.75rem; font-weight: 600; text-decoration: none; }
         .video-link:hover { color: var(--gold-light); }
+
+        /* MISC */
         .price-cell { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--gold-light); }
         .empty-state { text-align: center; padding: 60px 20px; color: var(--white-dim); }
         .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
         .empty-state p { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
 
+        /* FOOTER */
         footer { background: var(--black-2); border-top: 1px solid var(--border); padding: 20px 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
         .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 700; color: var(--gold); letter-spacing: 3px; }
         .footer-info { font-size: 0.65rem; letter-spacing: 2px; color: var(--white-dim); text-transform: uppercase; }
@@ -125,7 +139,7 @@
             .modal-body .full-width, .section-divider, .section-title { grid-column: span 1; }
             .container { padding: 16px; }
             .tabs { padding: 0 1rem; }
-            .tab-btn { padding: 14px 16px; font-size: 0.6rem; }
+            .tab-btn { padding: 14px 16px; font-size: 0.6rem; letter-spacing: 2px; }
             header { padding: 0 1rem; }
         }
     </style>
@@ -177,12 +191,8 @@
         <table>
             <thead>
                 <tr>
-                    <th>Fecha</th>
-                    <th>Cliente</th>
-                    <th>Actividad</th>
-                    <th>Responsable</th>
-                    <th>Estado</th>
-                    <th>Notas</th>
+                    <th>Fecha</th><th>Cliente</th><th>Actividad</th>
+                    <th>Responsable</th><th>Estado</th><th>Notas</th>
                 </tr>
             </thead>
             <tbody id="tblTareas">
@@ -434,19 +444,17 @@
 
 <script>
 // ============================================================
-//  ⚙️  CONFIGURACIÓN — Pega aquí la URL de tu Web App
+//  ⚙️  CONFIGURACIÓN
 // ============================================================
 const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
 
-// Datos en memoria
 let dTar = [], dCli = [], dProp = [];
 
 // ============================================================
 //  INICIO
 // ============================================================
 window.onload = () => {
-    const hoy = new Date().toISOString().split('T')[0];
-    document.getElementById('tarFecha').value = hoy;
+    document.getElementById('tarFecha').value = new Date().toISOString().split('T')[0];
     cargarTodo();
 };
 
@@ -501,8 +509,7 @@ async function cargarPropiedades() {
 function renderStats(containerId, items, campoEstado) {
     const c = document.getElementById(containerId);
     if (!c) return;
-    const esPro = containerId === 'statsPro';
-    const estados = esPro
+    const estados = containerId === 'statsPro'
         ? ['DISPONIBLE','SEPARADO','VENDIDO','ARRENDADO']
         : ['PENDIENTE','EN PROCESO','COMPLETADA','CANCELADA'];
     c.innerHTML = estados.map(e => {
@@ -519,14 +526,11 @@ function renderTareas() {
     const fF = document.getElementById('fTarFecha').value;
     const fR = document.getElementById('fTarResp').value;
     const fE = document.getElementById('fTarEstado').value;
-
     const fil = dTar.filter(i => {
         const fechaOk = !fF || (i.FECHA || '').includes(fF);
         return fechaOk && (!fR || i.RESPONSABLE === fR) && (!fE || i.ESTADO === fE);
     });
-
     if (fil.length === 0) { tb.innerHTML = emptyRow(6); return; }
-
     tb.innerHTML = fil.map(i => {
         const fecha = i.FECHA ? new Date(i.FECHA).toLocaleDateString('es-CO') : '—';
         return `<tr onclick="abrirModalTarea(false, ${JSON.stringify(i).replace(/"/g,'&quot;')})">
@@ -546,19 +550,15 @@ function renderPropiedades() {
     const fT = document.getElementById('fProTipo').value;
     const fE = document.getElementById('fProEstado').value;
     const fC = document.getElementById('fProCiudad').value;
-
     const fil = dProp.filter(i =>
         (!fN || i.NEGOCIO === fN) && (!fT || i.TIPO === fT) &&
         (!fE || i.ESTADO === fE) && (!fC || i.CIUDAD === fC)
     );
-
     if (fil.length === 0) { tb.innerHTML = emptyRow(8); return; }
-
     tb.innerHTML = fil.map(i => {
         const precio = i.PRECIO ? new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(i.PRECIO) : '—';
         const dest = i.DESTACADO === 'SI' ? '<span class="badge-destacado">★ DEST</span>' : '';
-        const esc = JSON.stringify(i).replace(/"/g,'&quot;');
-        return `<tr onclick="abrirModalPropiedad(false, ${esc})">
+        return `<tr onclick="abrirModalPropiedad(false, ${JSON.stringify(i).replace(/"/g,'&quot;')})">
             <td><small style="color:#555">${i.ID || ''}</small></td>
             <td>${i.TITULO || ''}${dest}</td>
             <td><small>${i.NEGOCIO || ''}</small></td>
@@ -576,12 +576,9 @@ function renderClientes() {
     const fT = document.getElementById('fCliTipo').value;
     const fE = document.getElementById('fCliEstado').value;
     const fil = dCli.filter(i => (!fT || i.TIPO_SERVICIO === fT) && (!fE || i.ESTADO_CLIENTE === fE));
-
     if (fil.length === 0) { tb.innerHTML = emptyRow(6); return; }
-
     tb.innerHTML = fil.map(i => {
-        const esc = JSON.stringify(i).replace(/"/g,'&quot;');
-        return `<tr onclick="abrirModalCliente(false, ${esc})">
+        return `<tr onclick="abrirModalCliente(false, ${JSON.stringify(i).replace(/"/g,'&quot;')})">
             <td>${i.NOMBRE || ''}</td>
             <td><small>${i.CEDULA_NIT || ''}</small></td>
             <td>${i.TELEFONO || ''}</td>
@@ -604,20 +601,16 @@ function emptyRow(cols) {
 }
 
 // ============================================================
-//  MODALES — TAREA
+//  MODALES
 // ============================================================
 function abrirModalTarea(esNuevo, item) {
     document.getElementById('modalTarea').style.display = 'block';
-
-    // Poblar select de clientes
     const sel = document.getElementById('tarCliente');
     sel.innerHTML = '<option value="">Seleccione cliente...</option>';
     [...dCli].sort((a,b) => (a.NOMBRE||'').localeCompare(b.NOMBRE||'')).forEach(c => {
         const o = document.createElement('option'); o.value = c.NOMBRE; o.text = c.NOMBRE; sel.appendChild(o);
     });
-
     const hoy = new Date().toISOString().split('T')[0];
-
     if (esNuevo) {
         document.getElementById('tModalTar').innerText = "Nueva Tarea";
         document.getElementById('tarModo').value = "create";
@@ -643,19 +636,14 @@ function abrirModalTarea(esNuevo, item) {
     }
 }
 
-// ============================================================
-//  MODALES — PROPIEDAD
-// ============================================================
 function abrirModalPropiedad(esNuevo, item) {
     document.getElementById('modalPropiedad').style.display = 'block';
     document.getElementById('divFotos').style.display = 'none';
     document.getElementById('fotosGrid').innerHTML = '';
     document.getElementById('videoLink').innerHTML = '';
-
     const editables = ['proTitulo','proNegocio','proTipo','proEstado','proDestacado','proPais','proDepartamento',
         'proCiudad','proLocalidad','proPrecio','proArea','proAlcobas','proBanos','proEstrato',
         'proPiso','proAno','proAdmin','proGaraje','proInternas','proExternas','proDescripcion'];
-
     if (esNuevo) {
         document.getElementById('tModalPro').innerText = "Nueva Propiedad";
         document.getElementById('proModo').value = "create";
@@ -673,7 +661,6 @@ function abrirModalPropiedad(esNuevo, item) {
         document.getElementById('tModalPro').innerText = "Propiedad — " + (item.ID || '');
         document.getElementById('proModo').value = "edit";
         document.getElementById('proId').value = item.ID || '';
-
         const mapa = {
             proTitulo:'TITULO',proNegocio:'NEGOCIO',proTipo:'TIPO',proEstado:'ESTADO',proDestacado:'DESTACADO',
             proPais:'PAIS',proDepartamento:'DEPARTAMENTO',proCiudad:'CIUDAD',proLocalidad:'LOCALIDAD',
@@ -682,14 +669,10 @@ function abrirModalPropiedad(esNuevo, item) {
             proInternas:'INTERNAS',proExternas:'EXTERNAS',proDescripcion:'DESCRIPCION'
         };
         for (const [elId, key] of Object.entries(mapa)) {
-            const el = document.getElementById(elId);
-            if (el) el.value = item[key] || '';
+            const el = document.getElementById(elId); if (el) el.value = item[key] || '';
         }
-        // Solo algunos campos son editables al ver
         const soloLectura = ['proTitulo','proNegocio','proTipo','proPais','proDepartamento','proCiudad','proLocalidad','proArea','proAlcobas','proBanos','proEstrato','proPiso','proAno'];
         editables.forEach(id => { const el = document.getElementById(id); if(el) el.disabled = soloLectura.includes(id); });
-
-        // Fotos
         const fotos = [];
         for (let i = 1; i <= 10; i++) { const u = item['FOTO' + i]; if (u && u.trim()) fotos.push(u.trim()); }
         if (fotos.length > 0 || (item.VIDEO && item.VIDEO.trim())) {
@@ -708,13 +691,9 @@ function abrirModalPropiedad(esNuevo, item) {
     }
 }
 
-// ============================================================
-//  MODALES — CLIENTE
-// ============================================================
 function abrirModalCliente(esNuevo, item) {
     document.getElementById('modalCliente').style.display = 'block';
     const campos = ['cliNom','cliCed','cliTel','cliCor','cliDir','cliPre','cliTipo'];
-
     if (esNuevo) {
         document.getElementById('tModalCli').innerText = "Nuevo Cliente";
         document.getElementById('cliModo').value = "create";
@@ -749,108 +728,66 @@ async function guardarTarea() {
     const btn = document.getElementById('btnSaveTar');
     if (modo === 'create' && !document.getElementById('tarCliente').value) { alert("Seleccione un cliente"); return; }
     if (modo === 'create' && !document.getElementById('tarActividad').value) { alert("Describa la actividad"); return; }
-
-    let payload;
-    if (modo === 'create') {
-        payload = {
-            action: 'create_tarea',
-            cliente:     document.getElementById('tarCliente').value,
-            actividad:   document.getElementById('tarActividad').value,
-            responsable: document.getElementById('tarResp').value,
-            fecha:       document.getElementById('tarFecha').value,
-            estado:      document.getElementById('tarEstado').value
-        };
-    } else {
-        payload = {
-            action:  'update_tarea',
-            id:      document.getElementById('tarId').value,
-            estado:  document.getElementById('tarEstado').value,
-            notas:   document.getElementById('tarNotas').value
-        };
-    }
+    const payload = modo === 'create' ? {
+        action: 'create_tarea',
+        cliente:     document.getElementById('tarCliente').value,
+        actividad:   document.getElementById('tarActividad').value,
+        responsable: document.getElementById('tarResp').value,
+        fecha:       document.getElementById('tarFecha').value,
+        estado:      document.getElementById('tarEstado').value
+    } : {
+        action:  'update_tarea',
+        id:      document.getElementById('tarId').value,
+        estado:  document.getElementById('tarEstado').value,
+        notas:   document.getElementById('tarNotas').value
+    };
     await enviarJSON(payload, btn, "Guardar Tarea", cargarTareas);
 }
 
 async function guardarPropiedad() {
     const modo = document.getElementById('proModo').value;
     const btn = document.getElementById('btnSavePro');
-    if (!document.getElementById('proTitulo').value && modo === 'create') { alert("Ingrese el título"); return; }
-
-    let payload;
-    if (modo === 'create') {
-        payload = {
-            action: 'create_propiedad',
-            titulo: document.getElementById('proTitulo').value,
-            negocio: document.getElementById('proNegocio').value,
-            tipo: document.getElementById('proTipo').value,
-            estado: document.getElementById('proEstado').value,
-            destacado: document.getElementById('proDestacado').value,
-            pais: document.getElementById('proPais').value,
-            departamento: document.getElementById('proDepartamento').value,
-            ciudad: document.getElementById('proCiudad').value,
-            localidad: document.getElementById('proLocalidad').value,
-            precio: document.getElementById('proPrecio').value,
-            area: document.getElementById('proArea').value,
-            alcobas: document.getElementById('proAlcobas').value,
-            banos: document.getElementById('proBanos').value,
-            estrato: document.getElementById('proEstrato').value,
-            piso: document.getElementById('proPiso').value,
-            ano: document.getElementById('proAno').value,
-            admin: document.getElementById('proAdmin').value,
-            garaje: document.getElementById('proGaraje').value,
-            internas: document.getElementById('proInternas').value,
-            externas: document.getElementById('proExternas').value,
-            descripcion: document.getElementById('proDescripcion').value
-        };
-    } else {
-        payload = {
-            action: 'update_propiedad',
-            id: document.getElementById('proId').value,
-            estado: document.getElementById('proEstado').value,
-            precio: document.getElementById('proPrecio').value,
-            admin: document.getElementById('proAdmin').value,
-            garaje: document.getElementById('proGaraje').value,
-            internas: document.getElementById('proInternas').value,
-            externas: document.getElementById('proExternas').value,
-            destacado: document.getElementById('proDestacado').value,
-            descripcion: document.getElementById('proDescripcion').value
-        };
-    }
+    if (modo === 'create' && !document.getElementById('proTitulo').value) { alert("Ingrese el título"); return; }
+    const payload = modo === 'create' ? {
+        action: 'create_propiedad',
+        titulo:document.getElementById('proTitulo').value, negocio:document.getElementById('proNegocio').value,
+        tipo:document.getElementById('proTipo').value, estado:document.getElementById('proEstado').value,
+        destacado:document.getElementById('proDestacado').value, pais:document.getElementById('proPais').value,
+        departamento:document.getElementById('proDepartamento').value, ciudad:document.getElementById('proCiudad').value,
+        localidad:document.getElementById('proLocalidad').value, precio:document.getElementById('proPrecio').value,
+        area:document.getElementById('proArea').value, alcobas:document.getElementById('proAlcobas').value,
+        banos:document.getElementById('proBanos').value, estrato:document.getElementById('proEstrato').value,
+        piso:document.getElementById('proPiso').value, ano:document.getElementById('proAno').value,
+        admin:document.getElementById('proAdmin').value, garaje:document.getElementById('proGaraje').value,
+        internas:document.getElementById('proInternas').value, externas:document.getElementById('proExternas').value,
+        descripcion:document.getElementById('proDescripcion').value
+    } : {
+        action:'update_propiedad', id:document.getElementById('proId').value,
+        estado:document.getElementById('proEstado').value, precio:document.getElementById('proPrecio').value,
+        admin:document.getElementById('proAdmin').value, garaje:document.getElementById('proGaraje').value,
+        internas:document.getElementById('proInternas').value, externas:document.getElementById('proExternas').value,
+        destacado:document.getElementById('proDestacado').value, descripcion:document.getElementById('proDescripcion').value
+    };
     await enviarJSON(payload, btn, "Guardar Propiedad", cargarPropiedades);
 }
 
 async function guardarCliente() {
     const modo = document.getElementById('cliModo').value;
     const btn = document.getElementById('btnSaveCli');
-    if (modo === 'create' && !document.getElementById('cliNom').value) { alert("Ingrese el nombre del cliente"); return; }
-
-    let payload;
-    if (modo === 'create') {
-        payload = {
-            action: 'create_cliente',
-            nombre:     document.getElementById('cliNom').value,
-            cedula:     document.getElementById('cliCed').value,
-            telefono:   document.getElementById('cliTel').value,
-            correo:     document.getElementById('cliCor').value,
-            direccion:  document.getElementById('cliDir').value,
-            presupuesto:document.getElementById('cliPre').value,
-            tipo:       document.getElementById('cliTipo').value,
-            estado:     document.getElementById('cliEst').value
-        };
-    } else {
-        payload = {
-            action:  'update_cliente',
-            id:      document.getElementById('cliId').value,
-            estado:  document.getElementById('cliEst').value,
-            notas:   document.getElementById('cliNotas').value
-        };
-    }
+    if (modo === 'create' && !document.getElementById('cliNom').value) { alert("Ingrese el nombre"); return; }
+    const payload = modo === 'create' ? {
+        action:'create_cliente', nombre:document.getElementById('cliNom').value,
+        cedula:document.getElementById('cliCed').value, telefono:document.getElementById('cliTel').value,
+        correo:document.getElementById('cliCor').value, direccion:document.getElementById('cliDir').value,
+        presupuesto:document.getElementById('cliPre').value, tipo:document.getElementById('cliTipo').value,
+        estado:document.getElementById('cliEst').value
+    } : {
+        action:'update_cliente', id:document.getElementById('cliId').value,
+        estado:document.getElementById('cliEst').value, notas:document.getElementById('cliNotas').value
+    };
     await enviarJSON(payload, btn, "Guardar Cliente", () => { cargarClientes(); cargarTareas(); });
 }
 
-// ============================================================
-//  FETCH HELPER
-// ============================================================
 async function enviarJSON(payload, btn, labelOriginal, callback) {
     btn.disabled = true; btn.innerText = "Guardando...";
     try {
@@ -879,7 +816,6 @@ async function enviarJSON(payload, btn, labelOriginal, callback) {
 // ============================================================
 function cerrarModales() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 function clickFueraModal(e, id) { if (e.target.id === id) cerrarModales(); }
-
 function color(e) {
     if (!e) return '';
     const map = {
