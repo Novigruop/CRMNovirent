@@ -84,7 +84,8 @@ th, td{
 
 <script>
 
-const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
+// 🔥 YA NO USAMOS GOOGLE DIRECTO
+const API = "/api/data";
 
 // ===================== NAVEGACIÓN =====================
 function mostrarModulo(modulo, btn){
@@ -100,37 +101,49 @@ function mostrarModulo(modulo, btn){
 
 // ===================== PROPIEDADES =====================
 async function cargarPropiedades(){
-  const res = await fetch(API + "?action=read_propiedades");
-  const json = await res.json();
-
-  renderTabla(json.data);
+  try{
+    const res = await fetch(API + "?action=read_propiedades");
+    const json = await res.json();
+    renderTabla(json.data);
+  }catch(e){
+    console.error("Error propiedades", e);
+  }
 }
 
 // ===================== PROYECTOS 🔥 =====================
 async function cargarProyectos(){
-  const res = await fetch(API + "?action=read_proyectos");
-  const json = await res.json();
-
-  renderTabla(json.data);
+  try{
+    const res = await fetch(API + "?action=read_proyectos");
+    const json = await res.json();
+    renderTabla(json.data);
+  }catch(e){
+    console.error("Error proyectos", e);
+  }
 }
 
 // ===================== CLIENTES =====================
 async function cargarClientes(){
-  const res = await fetch(API + "?action=read_clientes");
-  const json = await res.json();
-
-  renderTabla(json.data);
+  try{
+    const res = await fetch(API + "?action=read_clientes");
+    const json = await res.json();
+    renderTabla(json.data);
+  }catch(e){
+    console.error("Error clientes", e);
+  }
 }
 
 // ===================== TAREAS =====================
 async function cargarTareas(){
-  const res = await fetch(API + "?action=read_tareas");
-  const json = await res.json();
-
-  renderTabla(json.data);
+  try{
+    const res = await fetch(API + "?action=read_tareas");
+    const json = await res.json();
+    renderTabla(json.data);
+  }catch(e){
+    console.error("Error tareas", e);
+  }
 }
 
-// ===================== RENDER GENERAL =====================
+// ===================== RENDER =====================
 function renderTabla(data){
 
   const tabla = document.getElementById("tabla");
