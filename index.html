@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Novigroup CRM</title>
+<title>Novigroup CRM PRO</title>
 
 <style>
 body{background:#0a0a0a;color:#ddd;font-family:Arial;margin:0}
-header{text-align:center;padding:28px;color:#C9A84C;font-size:32px}
+header{text-align:center;padding:25px;color:#C9A84C;font-size:30px}
 
 .tabs{display:flex;justify-content:center;gap:30px;border-bottom:1px solid #222}
-.tabs button{background:none;border:none;color:#aaa;padding:14px;cursor:pointer}
+.tabs button{background:none;border:none;color:#aaa;padding:12px;cursor:pointer}
 .tabs button.active{color:#C9A84C;border-bottom:2px solid #C9A84C}
 
 .container{padding:20px}
@@ -18,7 +18,8 @@ header{text-align:center;padding:28px;color:#C9A84C;font-size:32px}
 .btn-danger{background:#c94c4c;color:white}
 
 table{width:100%;border-collapse:collapse;margin-top:20px}
-th,td{padding:10px;border-bottom:1px solid #222}
+th,td{padding:10px;border-bottom:1px solid #222;font-size:13px}
+th{color:#C9A84C}
 
 .modal{
 position:fixed;top:0;left:0;width:100%;height:100%;
@@ -29,21 +30,25 @@ display:none;justify-content:center;align-items:center
 
 .box{
 background:#111;padding:20px;border-radius:10px;
-width:600px
+width:700px;max-height:90vh;overflow:auto
 }
 
-input,select{
-width:100%;
-margin-bottom:10px;
-padding:8px;
-background:#1a1a1a;border:1px solid #333;color:white
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+input{
+background:#1a1a1a;border:1px solid #333;color:white;
+padding:8px;border-radius:6px
 }
 </style>
 </head>
 
 <body>
 
-<header>NOVIGROUP</header>
+<header>NOVIGROUP CRM</header>
 
 <div class="tabs">
 <button onclick="tab('propiedades',this)" class="active">PROPIEDADES</button>
@@ -57,15 +62,7 @@ background:#1a1a1a;border:1px solid #333;color:white
 <button class="btn" onclick="abrirModal()">+ NUEVO</button>
 
 <table>
-<thead>
-<tr>
-<th>ID</th>
-<th>TÍTULO</th>
-<th>CIUDAD</th>
-<th>PRECIO</th>
-<th>ACCIONES</th>
-</tr>
-</thead>
+<thead id="thead"></thead>
 <tbody id="tabla"></tbody>
 </table>
 
@@ -77,10 +74,9 @@ background:#1a1a1a;border:1px solid #333;color:white
 
 <h3 id="tituloModal"></h3>
 
-<input id="titulo" placeholder="Título">
-<input id="ciudad" placeholder="Ciudad">
-<input id="precio" placeholder="Precio">
+<div id="formulario" class="grid"></div>
 
+<br>
 <button class="btn" onclick="guardar()">GUARDAR</button>
 
 </div>
@@ -91,6 +87,7 @@ background:#1a1a1a;border:1px solid #333;color:white
 const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
 
 let modulo = "propiedades";
+let dataGlobal = [];
 let editID = null;
 
 // CAMBIAR TAB
@@ -101,29 +98,95 @@ b.classList.add("active");
 cargar();
 }
 
-// ABRIR MODAL NUEVO
+// CARGAR DATOS
+async function cargar(){
+
+const r = await fetch(API+"?action=read_"+modulo);
+const j = await r.json();
+
+dataGlobal = j.data || [];
+
+if(dataGlobal.length === 0){
+tabla.innerHTML = "<tr><td>Sin datos</td></tr>";
+return;
+}
+
+// 🔥 CREAR HEADERS DINÁMICOS
+const headers = Object.keys(dataGlobal[0]);
+
+thead.innerHTML = "<tr>" +
+headers.map(h=>`<th>${h}</th>`).join("") +
+"<th>ACCIONES</th></tr>";
+
+// 🔥 CREAR TABLA
+tabla.innerHTML = dataGlobal.map(p=>`
+<tr>
+${headers.map(h=>`<td>${p[h]||""}</td>`).join("")}
+<td>
+<button class="btn" onclick='editar(${JSON.stringify(p)})'>✏️</button>
+<button class="btn btn-danger" onclick="eliminar('${p.ID}')">🗑</button>
+</td>
+</tr>
+`).join("");
+
+}
+
+// ABRIR MODAL DINÁMICO
 function abrirModal(){
+
 editID = null;
-titulo.value="";
-ciudad.value="";
-precio.value="";
-tituloModal.innerText="Nuevo registro";
+tituloModal.innerText = "Nuevo "+modulo;
+
+const headers = Object.keys(dataGlobal[0] || {TITULO:"",CIUDAD:"",PRECIO:""});
+
+formulario.innerHTML = headers.map(h=>{
+if(h==="ID") return "";
+return `<input id="${h}" placeholder="${h}">`;
+}).join("");
+
 modal.classList.add("active");
 }
 
 // EDITAR
 function editar(p){
+
 editID = p.ID;
-titulo.value = p.TITULO;
-ciudad.value = p.CIUDAD;
-precio.value = p.PRECIO;
-tituloModal.innerText="Editar registro";
+tituloModal.innerText = "Editar";
+
+formulario.innerHTML = Object.keys(p).map(h=>{
+if(h==="ID") return "";
+return `<input id="${h}" value="${p[h]||""}">`;
+}).join("");
+
 modal.classList.add("active");
+}
+
+// GUARDAR
+async function guardar(){
+
+let inputs = document.querySelectorAll("#formulario input");
+
+let data = { action: editID ? "editar_"+modulo : "crear_"+modulo };
+
+inputs.forEach(i=>{
+data[i.id.toLowerCase()] = i.value;
+});
+
+data.id = editID;
+
+await fetch(API,{
+method:"POST",
+body:JSON.stringify(data)
+});
+
+modal.classList.remove("active");
+cargar();
 }
 
 // ELIMINAR
 async function eliminar(id){
-if(!confirm("¿Eliminar este registro?")) return;
+
+if(!confirm("Eliminar registro?")) return;
 
 await fetch(API,{
 method:"POST",
@@ -136,52 +199,7 @@ id:id
 cargar();
 }
 
-// GUARDAR
-async function guardar(){
-
-let data = {
-action: editID ? "editar_"+modulo : "crear_"+modulo,
-id: editID,
-titulo: titulo.value,
-ciudad: ciudad.value,
-precio: precio.value
-};
-
-await fetch(API,{
-method:"POST",
-body:JSON.stringify(data)
-});
-
-modal.classList.remove("active");
-cargar();
-}
-
-// CARGAR
-async function cargar(){
-
-const r = await fetch(API+"?action=read_"+modulo);
-const j = await r.json();
-
-if(!j.data){
-tabla.innerHTML = "<tr><td colspan='5'>Sin datos</td></tr>";
-return;
-}
-
-tabla.innerHTML = j.data.map(p=>`
-<tr>
-<td>${p.ID}</td>
-<td>${p.TITULO||p.NOMBRE}</td>
-<td>${p.CIUDAD||""}</td>
-<td>${p.PRECIO||""}</td>
-<td>
-<button class="btn" onclick='editar(${JSON.stringify(p)})'>Editar</button>
-<button class="btn btn-danger" onclick="eliminar('${p.ID}')">Eliminar</button>
-</td>
-</tr>
-`).join("");
-
-}
-
+// CERRAR MODAL
 modal.addEventListener("click",()=>modal.classList.remove("active"));
 
 cargar();
