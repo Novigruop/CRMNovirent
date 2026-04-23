@@ -5,25 +5,42 @@
 <title>Novigroup CRM</title>
 
 <style>
-body{
-background:#0a0a0a;
-color:white;
-font-family:Arial;
-margin:0;
-}
+body{background:#0a0a0a;color:white;font-family:Arial;margin:0}
 
 header{
 text-align:center;
-padding:20px;
-font-size:32px;
+padding:30px;
 color:#C9A84C;
+font-size:34px;
 }
+
+.tabs{
+display:flex;
+justify-content:center;
+gap:30px;
+border-bottom:1px solid #222;
+}
+
+.tabs button{
+background:none;
+border:none;
+color:#aaa;
+padding:15px;
+cursor:pointer;
+}
+
+.tabs button.active{
+color:#C9A84C;
+border-bottom:2px solid #C9A84C;
+}
+
+.container{padding:20px}
 
 .btn{
 background:#C9A84C;
 color:black;
+padding:10px;
 border:none;
-padding:10px 15px;
 border-radius:6px;
 cursor:pointer;
 }
@@ -34,247 +51,266 @@ border-collapse:collapse;
 margin-top:20px;
 }
 
-td,th{
-padding:10px;
+th,td{
+padding:12px;
 border-bottom:1px solid #222;
 }
 
 /* MODAL */
 .modal{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+top:0;left:0;
+width:100%;height:100%;
 background:rgba(0,0,0,0.85);
 display:none;
 justify-content:center;
 align-items:center;
 }
 
-.modal.active{display:flex;}
+.modal.active{display:flex}
 
-.modal-box{
+.box{
 background:#111;
-padding:25px;
+padding:20px;
 border-radius:12px;
-width:700px;
+width:600px;
 max-height:90vh;
 overflow:auto;
-}
-
-.modal-header{
-display:flex;
-justify-content:space-between;
-margin-bottom:10px;
-}
-
-.close{
-cursor:pointer;
 }
 
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:12px;
-}
-
-label{
-font-size:12px;
-color:#C9A84C;
+gap:10px;
 }
 
 input,select,textarea{
 background:#1a1a1a;
 border:1px solid #333;
-padding:8px;
 color:white;
+padding:8px;
 border-radius:6px;
 }
 
-textarea{
-grid-column:span 2;
-height:100px;
-}
+textarea{grid-column:span 2}
 
-.save{
-margin-top:15px;
-width:100%;
-}
 </style>
 </head>
 
 <body>
 
-<header>NOVIGROUP CRM</header>
+<header>NOVIGROUP</header>
 
-<div style="padding:20px">
-<button class="btn" onclick="abrirModal()">+ NUEVA PROPIEDAD</button>
+<div class="tabs">
+<button onclick="tab('tareas',this)" class="active">TAREAS</button>
+<button onclick="tab('propiedades',this)">PROPIEDADES</button>
+<button onclick="tab('proyectos',this)">PROYECTOS</button>
+<button onclick="tab('clientes',this)">CLIENTES</button>
+</div>
 
-<table id="tabla"></table>
+<div class="container">
+
+<button class="btn" onclick="abrirModal()">+ NUEVO</button>
+
+<table id="tabla">
+<thead>
+<tr>
+<th>ID</th>
+<th>TITULO</th>
+<th>CIUDAD</th>
+<th>PRECIO</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
 </div>
 
 <!-- MODAL -->
 <div id="modal" class="modal">
+<div class="box" onclick="event.stopPropagation()">
 
-<div class="modal-box" onclick="event.stopPropagation()">
+<h3 id="tituloModal"></h3>
 
-<div class="modal-header">
-<h2>Nueva Propiedad</h2>
-<span class="close" onclick="cerrarModal()">✕</span>
-</div>
+<div id="formulario" class="grid"></div>
 
-<div class="grid">
-
-<label>Título</label>
-<input id="titulo">
-
-<label>Tipo Negocio</label>
-<select id="negocio">
-<option>VENTA</option>
-<option>RENTA</option>
-</select>
-
-<label>Tipo Inmueble</label>
-<select id="tipo">
-<option>CASA</option>
-<option>APARTAMENTO</option>
-<option>LOTE</option>
-</select>
-
-<label>Estado</label>
-<select id="estado">
-<option>DISPONIBLE</option>
-<option>VENDIDO</option>
-</select>
-
-<label>Ciudad</label>
-<input id="ciudad">
-
-<label>Localidad</label>
-<input id="localidad">
-
-<label>Precio</label>
-<input id="precio">
-
-<label>Área</label>
-<input id="area">
-
-<label>Alcobas</label>
-<input id="alcobas">
-
-<label>Baños</label>
-<input id="banos">
-
-<label>País</label>
-<input id="pais" value="Colombia">
-
-<label>Departamento</label>
-<input id="departamento">
-
-<label>Garaje</label>
-<input id="garaje">
-
-<label>Estrato</label>
-<input id="estrato">
-
-<label>Pisos</label>
-<input id="pisos">
-
-<label>Año</label>
-<input id="ano">
-
-<label>Admin</label>
-<input id="admin">
-
-<label>Internas</label>
-<input id="internas">
-
-<label>Externas</label>
-<input id="externas">
-
-<label>Destacado</label>
-<select id="destacado">
-<option>SI</option>
-<option>NO</option>
-</select>
-
-<label>Descripción</label>
-<textarea id="descripcion"></textarea>
-
-</div>
-
-<button class="btn save" onclick="guardar()">GUARDAR PROPIEDAD</button>
+<br>
+<button class="btn" onclick="guardar()">GUARDAR</button>
 
 </div>
 </div>
 
 <script>
 
-const API = "TU_URL_DE_APPS_SCRIPT_AQUI";
+const API = "PEGA_AQUI_TU_URL_APPS_SCRIPT";
+let moduloActual = "tareas";
 
-// abrir / cerrar
+// CAMBIAR TAB
+function tab(m,b){
+moduloActual = m;
+
+document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
+
+cargar();
+}
+
+// ABRIR MODAL DINÁMICO
 function abrirModal(){
+
 document.getElementById("modal").classList.add("active");
+
+const form = document.getElementById("formulario");
+
+if(moduloActual === "propiedades"){
+document.getElementById("tituloModal").innerText="Nueva Propiedad";
+
+form.innerHTML = `
+<input id="titulo" placeholder="Título">
+<input id="ciudad" placeholder="Ciudad">
+<input id="localidad" placeholder="Localidad">
+<input id="precio" placeholder="Precio">
+<input id="area" placeholder="Área">
+<input id="alcobas" placeholder="Alcobas">
+<input id="banos" placeholder="Baños">
+<input id="tipo" placeholder="Tipo">
+<input id="negocio" placeholder="Negocio">
+<input id="estado" placeholder="Estado">
+<textarea id="descripcion" placeholder="Descripción"></textarea>
+`;
 }
 
-function cerrarModal(){
+if(moduloActual === "clientes"){
+document.getElementById("tituloModal").innerText="Nuevo Cliente";
+
+form.innerHTML = `
+<input id="nombre" placeholder="Nombre">
+<input id="cedula" placeholder="Cédula">
+<input id="telefono" placeholder="Teléfono">
+<input id="correo" placeholder="Correo">
+<input id="direccion" placeholder="Dirección">
+<input id="presupuesto" placeholder="Presupuesto">
+<textarea id="notas" placeholder="Notas"></textarea>
+`;
+}
+
+if(moduloActual === "tareas"){
+document.getElementById("tituloModal").innerText="Nueva Tarea";
+
+form.innerHTML = `
+<input id="cliente" placeholder="Cliente">
+<input id="actividad" placeholder="Actividad">
+<input id="responsable" placeholder="Responsable">
+<input id="estado" placeholder="Estado">
+<textarea id="notas" placeholder="Notas"></textarea>
+`;
+}
+
+if(moduloActual === "proyectos"){
+document.getElementById("tituloModal").innerText="Nuevo Proyecto";
+
+form.innerHTML = `
+<input id="titulo" placeholder="Título">
+<input id="ciudad" placeholder="Ciudad">
+<input id="precio" placeholder="Precio">
+<textarea id="descripcion" placeholder="Descripción"></textarea>
+`;
+}
+
+}
+
+// CERRAR
+document.getElementById("modal").addEventListener("click",()=>{
 document.getElementById("modal").classList.remove("active");
-}
+});
 
-// cerrar al hacer click afuera
-document.getElementById("modal").addEventListener("click",cerrarModal);
-
-// guardar
+// GUARDAR
 async function guardar(){
 
-await fetch(API,{
-method:"POST",
-body:JSON.stringify({
-action:"crear_propiedad",
+let data = { action:"crear_"+moduloActual };
+
+if(moduloActual === "propiedades"){
+Object.assign(data,{
 titulo:titulo.value,
 ciudad:ciudad.value,
 localidad:localidad.value,
-tipo:tipo.value,
-negocio:negocio.value,
+precio:precio.value,
+area:area.value,
 alcobas:alcobas.value,
 banos:banos.value,
-pais:pais.value,
-departamento:departamento.value,
-estado:estado.value,
-garaje:garaje.value,
-estrato:estrato.value,
-pisos:pisos.value,
-ano:ano.value,
-admin:admin.value,
-internas:internas.value,
-externas:externas.value,
-destacado:destacado.value,
-precio:precio.value,
-area:area.value
-})
-})
-
-cerrarModal();
-load();
+tipo:tipo.value,
+negocio:negocio.value,
+estado:estado.value
+});
 }
 
-// cargar tabla
-async function load(){
-const r = await fetch(API+"?action=read_propiedades");
+if(moduloActual === "clientes"){
+Object.assign(data,{
+nombre:nombre.value,
+cedula:cedula.value,
+telefono:telefono.value,
+correo:correo.value,
+direccion:direccion.value,
+presupuesto:presupuesto.value,
+notas:notas.value
+});
+}
+
+if(moduloActual === "tareas"){
+Object.assign(data,{
+cliente:cliente.value,
+actividad:actividad.value,
+responsable:responsable.value,
+estado:estado.value,
+notas:notas.value
+});
+}
+
+if(moduloActual === "proyectos"){
+Object.assign(data,{
+titulo:titulo.value,
+ciudad:ciudad.value,
+precio:precio.value,
+descripcion:descripcion.value
+});
+}
+
+await fetch(API,{
+method:"POST",
+body:JSON.stringify(data)
+});
+
+document.getElementById("modal").classList.remove("active");
+
+cargar();
+}
+
+// CARGAR DATOS
+async function cargar(){
+
+const r = await fetch(API+"?action=read_"+moduloActual);
 const j = await r.json();
 
-tabla.innerHTML = j.data.map(x=>`
-<tr>
-<td>${x.TITULO}</td>
-<td>${x.CIUDAD}</td>
-<td>$ ${x.PRECIO}</td>
-<td>${x.ESTADO}</td>
-</tr>
-`).join("");
+const tbody = document.querySelector("#tabla tbody");
+
+if(!j.data || j.data.length===0){
+tbody.innerHTML = "<tr><td colspan='4'>Sin datos</td></tr>";
+return;
 }
 
-load();
+tbody.innerHTML = j.data.map(x=>`
+<tr>
+<td>${x.ID||""}</td>
+<td>${x.TITULO||x.NOMBRE||""}</td>
+<td>${x.CIUDAD||""}</td>
+<td>${x.PRECIO||""}</td>
+</tr>
+`).join("");
+
+}
+
+// INIT
+cargar();
 
 </script>
 
