@@ -6,57 +6,38 @@
 
 <style>
 body{background:#0a0a0a;color:#ddd;font-family:Arial;margin:0}
-header{text-align:center;padding:28px 20px;color:#C9A84C;font-size:32px;letter-spacing:2px}
+header{text-align:center;padding:28px;color:#C9A84C;font-size:32px}
 
 .tabs{display:flex;justify-content:center;gap:30px;border-bottom:1px solid #222}
 .tabs button{background:none;border:none;color:#aaa;padding:14px;cursor:pointer}
 .tabs button.active{color:#C9A84C;border-bottom:2px solid #C9A84C}
 
-.container{padding:20px;max-width:1200px;margin:auto}
+.container{padding:20px}
 
-.btn{background:#C9A84C;color:#000;padding:10px 16px;border:none;border-radius:6px;cursor:pointer}
+.btn{background:#C9A84C;color:black;padding:8px 12px;border:none;border-radius:6px;cursor:pointer}
+.btn-danger{background:#c94c4c;color:white}
 
 table{width:100%;border-collapse:collapse;margin-top:20px}
-th,td{padding:12px;border-bottom:1px solid #222;text-align:left}
-thead th{color:#C9A84C;font-size:12px;letter-spacing:1px}
+th,td{padding:10px;border-bottom:1px solid #222}
 
-/* MODAL */
 .modal{
 position:fixed;top:0;left:0;width:100%;height:100%;
 background:rgba(0,0,0,0.85);
-display:none;justify-content:center;align-items:center;
-z-index:999;
+display:none;justify-content:center;align-items:center
 }
 .modal.active{display:flex}
 
 .box{
-background:#111;padding:22px;border-radius:10px;
-width:760px;max-height:90vh;overflow:auto;
-border:1px solid #1f1f1f;
+background:#111;padding:20px;border-radius:10px;
+width:600px
 }
 
-.section-title{
-color:#C9A84C;font-size:12px;letter-spacing:2px;margin:18px 0 8px 0;
-border-top:1px solid #222;padding-top:12px
-}
-.section-title:first-child{border-top:none;margin-top:0;padding-top:0}
-
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
-label{font-size:11px;color:#C9A84C;letter-spacing:1px;margin-bottom:2px;display:block}
-
-input,select,textarea{
+input,select{
 width:100%;
-background:#1a1a1a;border:1px solid #333;color:#eee;
-padding:10px;border-radius:6px;
+margin-bottom:10px;
+padding:8px;
+background:#1a1a1a;border:1px solid #333;color:white
 }
-
-textarea{grid-column:span 2;min-height:110px}
-
-.row{display:flex;gap:12px}
-.row > div{flex:1}
-
-.close{float:right;color:#999;cursor:pointer;font-size:18px}
 </style>
 </head>
 
@@ -65,113 +46,41 @@ textarea{grid-column:span 2;min-height:110px}
 <header>NOVIGROUP</header>
 
 <div class="tabs">
-<button class="active">PROPIEDADES</button>
+<button onclick="tab('propiedades',this)" class="active">PROPIEDADES</button>
+<button onclick="tab('proyectos',this)">PROYECTOS</button>
+<button onclick="tab('clientes',this)">CLIENTES</button>
+<button onclick="tab('tareas',this)">TAREAS</button>
 </div>
 
 <div class="container">
-<button class="btn" onclick="abrirModal()">+ NUEVA PROPIEDAD</button>
+
+<button class="btn" onclick="abrirModal()">+ NUEVO</button>
 
 <table>
 <thead>
 <tr>
 <th>ID</th>
 <th>TÍTULO</th>
-<th>NEGOCIO</th>
-<th>TIPO</th>
 <th>CIUDAD</th>
 <th>PRECIO</th>
-<th>ÁREA</th>
-<th>ESTADO</th>
+<th>ACCIONES</th>
 </tr>
 </thead>
 <tbody id="tabla"></tbody>
 </table>
+
 </div>
 
 <!-- MODAL -->
 <div id="modal" class="modal">
 <div class="box" onclick="event.stopPropagation()">
 
-<span class="close" onclick="cerrar()">✕</span>
+<h3 id="tituloModal"></h3>
 
-<div class="section-title">IDENTIFICACIÓN</div>
+<input id="titulo" placeholder="Título">
+<input id="ciudad" placeholder="Ciudad">
+<input id="precio" placeholder="Precio">
 
-<div>
-<label>TÍTULO DE LA PROPIEDAD</label>
-<input id="titulo">
-</div>
-
-<div class="row">
-<div>
-<label>TIPO DE NEGOCIO</label>
-<select id="negocio"><option>VENTA</option><option>RENTA</option></select>
-</div>
-<div>
-<label>TIPO DE INMUEBLE</label>
-<select id="tipo"><option>CASA</option><option>APARTAMENTO</option><option>LOTE</option></select>
-</div>
-</div>
-
-<div class="row">
-<div>
-<label>ESTADO</label>
-<select id="estado"><option>DISPONIBLE</option><option>VENDIDO</option></select>
-</div>
-<div>
-<label>DESTACADO</label>
-<select id="destacado"><option>NO</option><option>SI</option></select>
-</div>
-</div>
-
-<div class="section-title">UBICACIÓN</div>
-
-<div class="row">
-<div><label>PAÍS</label><input id="pais" value="Colombia"></div>
-<div><label>DEPARTAMENTO</label><input id="departamento"></div>
-</div>
-
-<div class="row">
-<div><label>CIUDAD</label><input id="ciudad"></div>
-<div><label>LOCALIDAD / BARRIO</label><input id="localidad"></div>
-</div>
-
-<div class="section-title">CARACTERÍSTICAS</div>
-
-<div class="row">
-<div><label>PRECIO</label><input id="precio"></div>
-<div><label>ÁREA</label><input id="area"></div>
-</div>
-
-<div class="row">
-<div><label>ALCOBAS</label><input id="alcobas"></div>
-<div><label>BAÑOS</label><input id="banos"></div>
-</div>
-
-<div class="row">
-<div><label>ESTRATO</label><input id="estrato"></div>
-<div><label>PISO</label><input id="pisos"></div>
-</div>
-
-<div class="row">
-<div><label>AÑO</label><input id="ano"></div>
-<div><label>ADMIN</label><input id="admin"></div>
-</div>
-
-<div class="row">
-<div><label>GARAJE</label><input id="garaje" value="0"></div>
-<div><label>INTERNAS</label><input id="internas" value="0"></div>
-</div>
-
-<div>
-<label>EXTERNAS</label>
-<input id="externas" value="0">
-</div>
-
-<div class="section-title">DESCRIPCIÓN</div>
-
-<textarea id="descripcion"></textarea>
-
-<br>
 <button class="btn" onclick="guardar()">GUARDAR</button>
 
 </div>
@@ -179,76 +88,101 @@ textarea{grid-column:span 2;min-height:110px}
 
 <script>
 
-// 🔥 TU URL YA CONFIGURADA
 const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
 
-function abrirModal(){ modal.classList.add("active"); }
-function cerrar(){ modal.classList.remove("active"); }
-modal.addEventListener("click", cerrar);
+let modulo = "propiedades";
+let editID = null;
 
-// 🔥 GUARDAR
-async function guardar(){
-await fetch(API,{
-method:"POST",
-body:JSON.stringify({
-action:"crear_propiedad",
-titulo:titulo.value,
-ciudad:ciudad.value,
-localidad:localidad.value,
-tipo:tipo.value,
-negocio:negocio.value,
-alcobas:alcobas.value,
-banos:banos.value,
-pais:pais.value,
-departamento:departamento.value,
-estado:estado.value,
-garaje:garaje.value,
-estrato:estrato.value,
-pisos:pisos.value,
-ano:ano.value,
-admin:admin.value,
-internas:internas.value,
-externas:externas.value,
-destacado:destacado.value,
-precio:precio.value,
-area:area.value
-})
-});
-cerrar();
+// CAMBIAR TAB
+function tab(m,b){
+modulo = m;
+document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
 cargar();
 }
 
-// 🔥 CARGAR (ARREGLADO)
+// ABRIR MODAL NUEVO
+function abrirModal(){
+editID = null;
+titulo.value="";
+ciudad.value="";
+precio.value="";
+tituloModal.innerText="Nuevo registro";
+modal.classList.add("active");
+}
+
+// EDITAR
+function editar(p){
+editID = p.ID;
+titulo.value = p.TITULO;
+ciudad.value = p.CIUDAD;
+precio.value = p.PRECIO;
+tituloModal.innerText="Editar registro";
+modal.classList.add("active");
+}
+
+// ELIMINAR
+async function eliminar(id){
+if(!confirm("¿Eliminar este registro?")) return;
+
+await fetch(API,{
+method:"POST",
+body:JSON.stringify({
+action:"eliminar_"+modulo,
+id:id
+})
+});
+
+cargar();
+}
+
+// GUARDAR
+async function guardar(){
+
+let data = {
+action: editID ? "editar_"+modulo : "crear_"+modulo,
+id: editID,
+titulo: titulo.value,
+ciudad: ciudad.value,
+precio: precio.value
+};
+
+await fetch(API,{
+method:"POST",
+body:JSON.stringify(data)
+});
+
+modal.classList.remove("active");
+cargar();
+}
+
+// CARGAR
 async function cargar(){
-try{
-const r = await fetch(API+"?action=read_propiedades");
+
+const r = await fetch(API+"?action=read_"+modulo);
 const j = await r.json();
 
-console.log("DATA:", j);
-
-if(!j.data || j.data.length === 0){
-tabla.innerHTML = "<tr><td colspan='8'>Sin propiedades</td></tr>";
+if(!j.data){
+tabla.innerHTML = "<tr><td colspan='5'>Sin datos</td></tr>";
 return;
 }
 
 tabla.innerHTML = j.data.map(p=>`
 <tr>
-<td>${p.ID || ""}</td>
-<td>${p.TITULO || ""}</td>
-<td>${p.NEGOCIO || ""}</td>
-<td>${p.TIPO || ""}</td>
-<td>${p.CIUDAD || ""}</td>
-<td>$ ${p.PRECIO || ""}</td>
-<td>${p.AREA || ""}</td>
-<td>${p.ESTADO || ""}</td>
+<td>${p.ID}</td>
+<td>${p.TITULO||p.NOMBRE}</td>
+<td>${p.CIUDAD||""}</td>
+<td>${p.PRECIO||""}</td>
+<td>
+<button class="btn" onclick='editar(${JSON.stringify(p)})'>Editar</button>
+<button class="btn btn-danger" onclick="eliminar('${p.ID}')">Eliminar</button>
+</td>
 </tr>
 `).join("");
 
-}catch(e){
-console.error(e);
-tabla.innerHTML = "<tr><td colspan='8'>Error conexión API</td></tr>";
 }
-}
+
+modal.addEventListener("click",()=>modal.classList.remove("active"));
 
 cargar();
 
