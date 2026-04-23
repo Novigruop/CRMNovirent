@@ -2,268 +2,311 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Novigroup CRM PRO</title>
+<title>Novigroup CRM</title>
 
 <style>
-body{background:#0a0a0a;color:white;font-family:Arial;margin:0}
+body{background:#0a0a0a;color:#ddd;font-family:Arial;margin:0}
+header{text-align:center;padding:28px 20px;color:#C9A84C;font-size:32px;letter-spacing:2px}
 
-header{
-text-align:center;
-padding:30px;
-color:#C9A84C;
-font-size:34px;
-}
+.tabs{display:flex;justify-content:center;gap:30px;border-bottom:1px solid #222}
+.tabs button{background:none;border:none;color:#aaa;padding:14px;cursor:pointer}
+.tabs button.active{color:#C9A84C;border-bottom:2px solid #C9A84C}
 
-/* TABS */
-.tabs{
-display:flex;
-justify-content:center;
-gap:30px;
-border-bottom:1px solid #222;
-}
-.tabs button{
-background:none;border:none;color:#aaa;padding:15px;cursor:pointer
-}
-.tabs button.active{
-color:#C9A84C;border-bottom:2px solid #C9A84C
-}
+.container{padding:20px;max-width:1200px;margin:auto}
 
-.container{padding:20px}
+.btn{background:#C9A84C;color:#000;padding:10px 16px;border:none;border-radius:6px;cursor:pointer}
 
-/* BOTONES */
-.btn{
-background:#C9A84C;color:black;padding:10px 15px;
-border:none;border-radius:6px;cursor:pointer
-}
-
-/* FILTROS */
-.filters{
-display:flex;
-gap:10px;
-margin:15px 0;
-}
-.filters select{
-background:#111;border:1px solid #333;color:white;padding:8px;border-radius:6px
-}
-
-/* TABLA */
-table{width:100%;border-collapse:collapse}
-th,td{padding:12px;border-bottom:1px solid #222}
-tr:hover{background:#111}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{padding:12px;border-bottom:1px solid #222;text-align:left}
+thead th{color:#C9A84C;font-size:12px;letter-spacing:1px}
 
 /* MODAL */
 .modal{
 position:fixed;top:0;left:0;width:100%;height:100%;
 background:rgba(0,0,0,0.85);
-display:none;justify-content:center;align-items:center
+display:none;justify-content:center;align-items:center;
+z-index:999;
 }
 .modal.active{display:flex}
 
 .box{
-background:#111;padding:25px;border-radius:12px;
-width:700px;max-height:90vh;overflow:auto
+background:#111;padding:22px;border-radius:10px;
+width:760px;max-height:90vh;overflow:auto;
+border:1px solid #1f1f1f;
 }
 
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px
+.section-title{
+color:#C9A84C;font-size:12px;letter-spacing:2px;margin:18px 0 8px 0;
+border-top:1px solid #222;padding-top:12px
 }
+.section-title:first-child{border-top:none;margin-top:0;padding-top:0}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+label{font-size:11px;color:#C9A84C;letter-spacing:1px;margin-bottom:2px;display:block}
 
 input,select,textarea{
-background:#1a1a1a;border:1px solid #333;color:white;
-padding:8px;border-radius:6px
+width:100%;
+background:#1a1a1a;border:1px solid #333;color:#eee;
+padding:10px;border-radius:6px;
 }
 
-textarea{grid-column:span 2}
+textarea{grid-column:span 2;min-height:110px}
 
-/* BOTÓN WHATSAPP */
-.whatsapp{
-color:#25D366;cursor:pointer
+.row{display:flex;gap:12px}
+.row > div{flex:1}
+
+.close{
+float:right;color:#999;cursor:pointer;font-size:18px
 }
 </style>
 </head>
 
 <body>
 
-<header>NOVIGROUP CRM PRO</header>
+<header>NOVIGROUP</header>
 
 <div class="tabs">
+<button onclick="tab('tareas',this)">TAREAS</button>
 <button onclick="tab('propiedades',this)" class="active">PROPIEDADES</button>
 <button onclick="tab('proyectos',this)">PROYECTOS</button>
 <button onclick="tab('clientes',this)">CLIENTES</button>
-<button onclick="tab('tareas',this)">TAREAS</button>
 </div>
 
 <div class="container">
-
-<button class="btn" onclick="abrirModal()">+ NUEVO</button>
-
-<div class="filters">
-<select id="fCiudad" onchange="cargar()">
-<option value="">Ciudad: Todas</option>
-</select>
-
-<select id="fTipo" onchange="cargar()">
-<option value="">Tipo: Todos</option>
-<option>CASA</option>
-<option>APARTAMENTO</option>
-<option>LOTE</option>
-</select>
-
-<select id="fNegocio" onchange="cargar()">
-<option value="">Negocio: Todos</option>
-<option>VENTA</option>
-<option>RENTA</option>
-</select>
-</div>
+<button class="btn" onclick="abrirModal()">+ NUEVA PROPIEDAD</button>
 
 <table>
 <thead>
 <tr>
 <th>ID</th>
 <th>TÍTULO</th>
-<th>CIUDAD</th>
-<th>TIPO</th>
 <th>NEGOCIO</th>
+<th>TIPO</th>
+<th>CIUDAD</th>
 <th>PRECIO</th>
-<th>WHATSAPP</th>
+<th>ÁREA</th>
+<th>ESTADO</th>
 </tr>
 </thead>
 <tbody id="tabla"></tbody>
 </table>
-
 </div>
 
-<!-- MODAL -->
+<!-- MODAL PROPIEDAD -->
 <div id="modal" class="modal">
 <div class="box" onclick="event.stopPropagation()">
 
-<h2>Nueva Propiedad</h2>
+<span class="close" onclick="cerrar()">✕</span>
 
-<div class="grid">
+<div class="section-title">IDENTIFICACIÓN</div>
 
-<input id="titulo" placeholder="Título">
-<input id="ciudad" placeholder="Ciudad">
+<div>
+<label>TÍTULO DE LA PROPIEDAD</label>
+<input id="titulo" placeholder="Ej: Apartamento moderno en el centro">
+</div>
 
-<input id="localidad" placeholder="Localidad">
-<input id="precio" placeholder="Precio">
+<div class="row">
+<div>
+<label>TIPO DE NEGOCIO</label>
+<select id="negocio">
+<option>VENTA</option>
+<option>RENTA</option>
+</select>
+</div>
 
-<input id="area" placeholder="Área">
-<input id="alcobas" placeholder="Alcobas">
+<div>
+<label>TIPO DE INMUEBLE</label>
+<select id="tipo">
+<option>CASA</option>
+<option>APARTAMENTO</option>
+<option>LOTE</option>
+</select>
+</div>
+</div>
 
-<input id="banos" placeholder="Baños">
-<input id="tipo" placeholder="Tipo">
+<div class="row">
+<div>
+<label>ESTADO</label>
+<select id="estado">
+<option>DISPONIBLE</option>
+<option>VENDIDO</option>
+</select>
+</div>
 
-<input id="negocio" placeholder="Negocio">
-<input id="estado" placeholder="Estado">
+<div>
+<label>DESTACADO</label>
+<select id="destacado">
+<option>NO</option>
+<option>SI</option>
+</select>
+</div>
+</div>
 
-<textarea id="descripcion" placeholder="Descripción"></textarea>
+<div class="section-title">UBICACIÓN</div>
 
+<div class="row">
+<div>
+<label>PAÍS</label>
+<input id="pais" value="Colombia">
+</div>
+<div>
+<label>DEPARTAMENTO</label>
+<input id="departamento">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>CIUDAD</label>
+<input id="ciudad">
+</div>
+<div>
+<label>LOCALIDAD / BARRIO</label>
+<input id="localidad" placeholder="Ej: El Poblado">
+</div>
+</div>
+
+<div class="section-title">CARACTERÍSTICAS</div>
+
+<div class="row">
+<div>
+<label>PRECIO (COP)</label>
+<input id="precio">
+</div>
+<div>
+<label>ÁREA (M²)</label>
+<input id="area">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>ALCOBAS</label>
+<input id="alcobas">
+</div>
+<div>
+<label>BAÑOS</label>
+<input id="banos">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>ESTRATO</label>
+<input id="estrato">
+</div>
+<div>
+<label>PISO</label>
+<input id="pisos">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>AÑO DE CONSTRUCCIÓN</label>
+<input id="ano">
+</div>
+<div>
+<label>ADMIN (COP/MES)</label>
+<input id="admin">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>GARAJE (CANTIDAD)</label>
+<input id="garaje" value="0">
+</div>
+<div>
+<label>PARQUEADEROS INTERNOS</label>
+<input id="internas" value="0">
+</div>
+</div>
+
+<div>
+<label>PARQUEADEROS EXTERNOS</label>
+<input id="externas" value="0">
+</div>
+
+<div class="section-title">DESCRIPCIÓN</div>
+
+<div>
+<label>DESCRIPCIÓN PARA PUBLICACIÓN</label>
+<textarea id="descripcion" placeholder="Describa la propiedad..."></textarea>
 </div>
 
 <br>
-<button class="btn" onclick="guardar()">Guardar</button>
+<button class="btn" onclick="guardar()">GUARDAR PROPIEDAD</button>
 
 </div>
 </div>
 
 <script>
 
-const API = "PEGA_AQUI_TU_URL";
+const API = "PEGA_AQUI_TU_URL_APPS_SCRIPT";
 
-let modulo = "propiedades";
-
-// CAMBIAR TAB
-function tab(m,b){
-modulo = m;
-
-document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
-b.classList.add("active");
-
-cargar();
-}
-
-// ABRIR MODAL
 function abrirModal(){
 document.getElementById("modal").classList.add("active");
 }
 
-// CERRAR MODAL
-document.getElementById("modal").addEventListener("click",()=>{
+function cerrar(){
 document.getElementById("modal").classList.remove("active");
-});
+}
 
-// GUARDAR
+document.getElementById("modal").addEventListener("click",cerrar);
+
 async function guardar(){
 
 await fetch(API,{
 method:"POST",
 body:JSON.stringify({
-action:"crear_"+modulo,
+action:"crear_propiedad",
 titulo:titulo.value,
 ciudad:ciudad.value,
 localidad:localidad.value,
-precio:precio.value,
-area:area.value,
-alcobas:alcobas.value,
-banos:banos.value,
 tipo:tipo.value,
 negocio:negocio.value,
+alcobas:alcobas.value,
+banos:banos.value,
+pais:pais.value,
+departamento:departamento.value,
 estado:estado.value,
-descripcion:descripcion.value
+garaje:garaje.value,
+estrato:estrato.value,
+pisos:pisos.value,
+ano:ano.value,
+admin:admin.value,
+internas:internas.value,
+externas:externas.value,
+destacado:destacado.value,
+precio:precio.value,
+area:area.value
 })
 });
 
-document.getElementById("modal").classList.remove("active");
-
+cerrar();
 cargar();
 }
 
-// CARGAR DATOS
 async function cargar(){
-
-const r = await fetch(API+"?action=read_"+modulo);
+const r = await fetch(API+"?action=read_propiedades");
 const j = await r.json();
 
-let data = j.data || [];
-
-// FILTROS
-const ciudad = fCiudad.value;
-const tipo = fTipo.value;
-const negocio = fNegocio.value;
-
-data = data.filter(p =>
-(!ciudad || p.CIUDAD === ciudad) &&
-(!tipo || p.TIPO === tipo) &&
-(!negocio || p.NEGOCIO === negocio)
-);
-
-// llenar ciudades dinámicas
-const ciudades = [...new Set(j.data.map(x=>x.CIUDAD))];
-fCiudad.innerHTML = `<option value="">Ciudad: Todas</option>` +
-ciudades.map(c=>`<option>${c}</option>`).join("");
-
-tabla.innerHTML = data.map(p=>`
+tabla.innerHTML = j.data.map(p=>`
 <tr>
 <td>${p.ID}</td>
 <td>${p.TITULO}</td>
-<td>${p.CIUDAD}</td>
-<td>${p.TIPO}</td>
 <td>${p.NEGOCIO}</td>
-<td>$ ${Number(p.PRECIO).toLocaleString()}</td>
-<td class="whatsapp" onclick="wa('${p.TITULO}')">WhatsApp</td>
+<td>${p.TIPO}</td>
+<td>${p.CIUDAD}</td>
+<td>$ ${p.PRECIO}</td>
+<td>${p.AREA}</td>
+<td>${p.ESTADO}</td>
 </tr>
 `).join("");
-
 }
 
-// WHATSAPP
-function wa(titulo){
-window.open(`https://wa.me/573000000000?text=Hola%20quiero%20info%20de%20${titulo}`);
-}
-
-// INIT
 cargar();
 
 </script>
