@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Novigroup CRM</title>
+<title>Novigroup CRM PRO</title>
 
 <style>
 body{background:#0a0a0a;color:white;font-family:Arial;margin:0}
@@ -14,114 +14,123 @@ color:#C9A84C;
 font-size:34px;
 }
 
+/* TABS */
 .tabs{
 display:flex;
 justify-content:center;
 gap:30px;
 border-bottom:1px solid #222;
 }
-
 .tabs button{
-background:none;
-border:none;
-color:#aaa;
-padding:15px;
-cursor:pointer;
+background:none;border:none;color:#aaa;padding:15px;cursor:pointer
 }
-
 .tabs button.active{
-color:#C9A84C;
-border-bottom:2px solid #C9A84C;
+color:#C9A84C;border-bottom:2px solid #C9A84C
 }
 
 .container{padding:20px}
 
+/* BOTONES */
 .btn{
-background:#C9A84C;
-color:black;
-padding:10px;
-border:none;
-border-radius:6px;
-cursor:pointer;
+background:#C9A84C;color:black;padding:10px 15px;
+border:none;border-radius:6px;cursor:pointer
 }
 
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
+/* FILTROS */
+.filters{
+display:flex;
+gap:10px;
+margin:15px 0;
+}
+.filters select{
+background:#111;border:1px solid #333;color:white;padding:8px;border-radius:6px
 }
 
-th,td{
-padding:12px;
-border-bottom:1px solid #222;
-}
+/* TABLA */
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid #222}
+tr:hover{background:#111}
 
 /* MODAL */
 .modal{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
+position:fixed;top:0;left:0;width:100%;height:100%;
 background:rgba(0,0,0,0.85);
-display:none;
-justify-content:center;
-align-items:center;
+display:none;justify-content:center;align-items:center
 }
-
 .modal.active{display:flex}
 
 .box{
-background:#111;
-padding:20px;
-border-radius:12px;
-width:600px;
-max-height:90vh;
-overflow:auto;
+background:#111;padding:25px;border-radius:12px;
+width:700px;max-height:90vh;overflow:auto
 }
 
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:10px;
+gap:12px
 }
 
 input,select,textarea{
-background:#1a1a1a;
-border:1px solid #333;
-color:white;
-padding:8px;
-border-radius:6px;
+background:#1a1a1a;border:1px solid #333;color:white;
+padding:8px;border-radius:6px
 }
 
 textarea{grid-column:span 2}
 
+/* BOTÓN WHATSAPP */
+.whatsapp{
+color:#25D366;cursor:pointer
+}
 </style>
 </head>
 
 <body>
 
-<header>NOVIGROUP</header>
+<header>NOVIGROUP CRM PRO</header>
 
 <div class="tabs">
-<button onclick="tab('tareas',this)" class="active">TAREAS</button>
-<button onclick="tab('propiedades',this)">PROPIEDADES</button>
+<button onclick="tab('propiedades',this)" class="active">PROPIEDADES</button>
 <button onclick="tab('proyectos',this)">PROYECTOS</button>
 <button onclick="tab('clientes',this)">CLIENTES</button>
+<button onclick="tab('tareas',this)">TAREAS</button>
 </div>
 
 <div class="container">
 
 <button class="btn" onclick="abrirModal()">+ NUEVO</button>
 
-<table id="tabla">
+<div class="filters">
+<select id="fCiudad" onchange="cargar()">
+<option value="">Ciudad: Todas</option>
+</select>
+
+<select id="fTipo" onchange="cargar()">
+<option value="">Tipo: Todos</option>
+<option>CASA</option>
+<option>APARTAMENTO</option>
+<option>LOTE</option>
+</select>
+
+<select id="fNegocio" onchange="cargar()">
+<option value="">Negocio: Todos</option>
+<option>VENTA</option>
+<option>RENTA</option>
+</select>
+</div>
+
+<table>
 <thead>
 <tr>
 <th>ID</th>
-<th>TITULO</th>
+<th>TÍTULO</th>
 <th>CIUDAD</th>
+<th>TIPO</th>
+<th>NEGOCIO</th>
 <th>PRECIO</th>
+<th>WHATSAPP</th>
 </tr>
 </thead>
-<tbody></tbody>
+<tbody id="tabla"></tbody>
 </table>
 
 </div>
@@ -130,24 +139,44 @@ textarea{grid-column:span 2}
 <div id="modal" class="modal">
 <div class="box" onclick="event.stopPropagation()">
 
-<h3 id="tituloModal"></h3>
+<h2>Nueva Propiedad</h2>
 
-<div id="formulario" class="grid"></div>
+<div class="grid">
+
+<input id="titulo" placeholder="Título">
+<input id="ciudad" placeholder="Ciudad">
+
+<input id="localidad" placeholder="Localidad">
+<input id="precio" placeholder="Precio">
+
+<input id="area" placeholder="Área">
+<input id="alcobas" placeholder="Alcobas">
+
+<input id="banos" placeholder="Baños">
+<input id="tipo" placeholder="Tipo">
+
+<input id="negocio" placeholder="Negocio">
+<input id="estado" placeholder="Estado">
+
+<textarea id="descripcion" placeholder="Descripción"></textarea>
+
+</div>
 
 <br>
-<button class="btn" onclick="guardar()">GUARDAR</button>
+<button class="btn" onclick="guardar()">Guardar</button>
 
 </div>
 </div>
 
 <script>
 
-const API = "PEGA_AQUI_TU_URL_APPS_SCRIPT";
-let moduloActual = "tareas";
+const API = "PEGA_AQUI_TU_URL";
+
+let modulo = "propiedades";
 
 // CAMBIAR TAB
 function tab(m,b){
-moduloActual = m;
+modulo = m;
 
 document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
 b.classList.add("active");
@@ -155,71 +184,12 @@ b.classList.add("active");
 cargar();
 }
 
-// ABRIR MODAL DINÁMICO
+// ABRIR MODAL
 function abrirModal(){
-
 document.getElementById("modal").classList.add("active");
-
-const form = document.getElementById("formulario");
-
-if(moduloActual === "propiedades"){
-document.getElementById("tituloModal").innerText="Nueva Propiedad";
-
-form.innerHTML = `
-<input id="titulo" placeholder="Título">
-<input id="ciudad" placeholder="Ciudad">
-<input id="localidad" placeholder="Localidad">
-<input id="precio" placeholder="Precio">
-<input id="area" placeholder="Área">
-<input id="alcobas" placeholder="Alcobas">
-<input id="banos" placeholder="Baños">
-<input id="tipo" placeholder="Tipo">
-<input id="negocio" placeholder="Negocio">
-<input id="estado" placeholder="Estado">
-<textarea id="descripcion" placeholder="Descripción"></textarea>
-`;
 }
 
-if(moduloActual === "clientes"){
-document.getElementById("tituloModal").innerText="Nuevo Cliente";
-
-form.innerHTML = `
-<input id="nombre" placeholder="Nombre">
-<input id="cedula" placeholder="Cédula">
-<input id="telefono" placeholder="Teléfono">
-<input id="correo" placeholder="Correo">
-<input id="direccion" placeholder="Dirección">
-<input id="presupuesto" placeholder="Presupuesto">
-<textarea id="notas" placeholder="Notas"></textarea>
-`;
-}
-
-if(moduloActual === "tareas"){
-document.getElementById("tituloModal").innerText="Nueva Tarea";
-
-form.innerHTML = `
-<input id="cliente" placeholder="Cliente">
-<input id="actividad" placeholder="Actividad">
-<input id="responsable" placeholder="Responsable">
-<input id="estado" placeholder="Estado">
-<textarea id="notas" placeholder="Notas"></textarea>
-`;
-}
-
-if(moduloActual === "proyectos"){
-document.getElementById("tituloModal").innerText="Nuevo Proyecto";
-
-form.innerHTML = `
-<input id="titulo" placeholder="Título">
-<input id="ciudad" placeholder="Ciudad">
-<input id="precio" placeholder="Precio">
-<textarea id="descripcion" placeholder="Descripción"></textarea>
-`;
-}
-
-}
-
-// CERRAR
+// CERRAR MODAL
 document.getElementById("modal").addEventListener("click",()=>{
 document.getElementById("modal").classList.remove("active");
 });
@@ -227,10 +197,10 @@ document.getElementById("modal").classList.remove("active");
 // GUARDAR
 async function guardar(){
 
-let data = { action:"crear_"+moduloActual };
-
-if(moduloActual === "propiedades"){
-Object.assign(data,{
+await fetch(API,{
+method:"POST",
+body:JSON.stringify({
+action:"crear_"+modulo,
 titulo:titulo.value,
 ciudad:ciudad.value,
 localidad:localidad.value,
@@ -240,44 +210,9 @@ alcobas:alcobas.value,
 banos:banos.value,
 tipo:tipo.value,
 negocio:negocio.value,
-estado:estado.value
-});
-}
-
-if(moduloActual === "clientes"){
-Object.assign(data,{
-nombre:nombre.value,
-cedula:cedula.value,
-telefono:telefono.value,
-correo:correo.value,
-direccion:direccion.value,
-presupuesto:presupuesto.value,
-notas:notas.value
-});
-}
-
-if(moduloActual === "tareas"){
-Object.assign(data,{
-cliente:cliente.value,
-actividad:actividad.value,
-responsable:responsable.value,
 estado:estado.value,
-notas:notas.value
-});
-}
-
-if(moduloActual === "proyectos"){
-Object.assign(data,{
-titulo:titulo.value,
-ciudad:ciudad.value,
-precio:precio.value,
 descripcion:descripcion.value
-});
-}
-
-await fetch(API,{
-method:"POST",
-body:JSON.stringify(data)
+})
 });
 
 document.getElementById("modal").classList.remove("active");
@@ -288,25 +223,44 @@ cargar();
 // CARGAR DATOS
 async function cargar(){
 
-const r = await fetch(API+"?action=read_"+moduloActual);
+const r = await fetch(API+"?action=read_"+modulo);
 const j = await r.json();
 
-const tbody = document.querySelector("#tabla tbody");
+let data = j.data || [];
 
-if(!j.data || j.data.length===0){
-tbody.innerHTML = "<tr><td colspan='4'>Sin datos</td></tr>";
-return;
-}
+// FILTROS
+const ciudad = fCiudad.value;
+const tipo = fTipo.value;
+const negocio = fNegocio.value;
 
-tbody.innerHTML = j.data.map(x=>`
+data = data.filter(p =>
+(!ciudad || p.CIUDAD === ciudad) &&
+(!tipo || p.TIPO === tipo) &&
+(!negocio || p.NEGOCIO === negocio)
+);
+
+// llenar ciudades dinámicas
+const ciudades = [...new Set(j.data.map(x=>x.CIUDAD))];
+fCiudad.innerHTML = `<option value="">Ciudad: Todas</option>` +
+ciudades.map(c=>`<option>${c}</option>`).join("");
+
+tabla.innerHTML = data.map(p=>`
 <tr>
-<td>${x.ID||""}</td>
-<td>${x.TITULO||x.NOMBRE||""}</td>
-<td>${x.CIUDAD||""}</td>
-<td>${x.PRECIO||""}</td>
+<td>${p.ID}</td>
+<td>${p.TITULO}</td>
+<td>${p.CIUDAD}</td>
+<td>${p.TIPO}</td>
+<td>${p.NEGOCIO}</td>
+<td>$ ${Number(p.PRECIO).toLocaleString()}</td>
+<td class="whatsapp" onclick="wa('${p.TITULO}')">WhatsApp</td>
 </tr>
 `).join("");
 
+}
+
+// WHATSAPP
+function wa(titulo){
+window.open(`https://wa.me/573000000000?text=Hola%20quiero%20info%20de%20${titulo}`);
 }
 
 // INIT
