@@ -13,17 +13,28 @@ body {
   color:white;
 }
 
+/* HEADER */
 header{
   text-align:center;
-  padding:20px;
-  font-size:28px;
-  color:#C9A84C;
+  padding:30px;
 }
 
+header h1{
+  color:#C9A84C;
+  font-size:40px;
+}
+
+header p{
+  color:#aaa;
+  font-size:12px;
+  letter-spacing:2px;
+}
+
+/* TABS */
 .tabs{
   display:flex;
   justify-content:center;
-  gap:20px;
+  gap:40px;
   border-bottom:1px solid #222;
 }
 
@@ -31,7 +42,7 @@ header{
   background:none;
   border:none;
   color:#aaa;
-  padding:10px;
+  padding:15px;
   cursor:pointer;
 }
 
@@ -40,8 +51,40 @@ header{
   border-bottom:2px solid #C9A84C;
 }
 
-.container{
-  padding:20px;
+/* PANEL */
+.panel{
+  margin:20px;
+  padding:15px;
+  background:#111;
+  border-radius:10px;
+  display:flex;
+  gap:15px;
+  align-items:center;
+}
+
+.btn{
+  background:#C9A84C;
+  color:black;
+  border:none;
+  padding:10px 15px;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.select{
+  background:#1a1a1a;
+  border:1px solid #333;
+  color:white;
+  padding:8px;
+  border-radius:5px;
+}
+
+/* TABLA */
+.table-box{
+  margin:20px;
+  background:#111;
+  border-radius:10px;
+  overflow:hidden;
 }
 
 table{
@@ -49,17 +92,26 @@ table{
   border-collapse:collapse;
 }
 
-th, td{
-  padding:10px;
-  border-bottom:1px solid #222;
-  text-align:left;
+th{
+  color:#C9A84C;
+  font-size:12px;
+  letter-spacing:1px;
+  padding:15px;
+}
+
+td{
+  padding:12px;
+  border-top:1px solid #222;
 }
 </style>
 </head>
 
 <body>
 
-<header>NOVIGROUP CRM</header>
+<header>
+  <h1>NOVIGROUP</h1>
+  <p>GESTIÓN INMOBILIARIA</p>
+</header>
 
 <div class="tabs">
   <button onclick="mostrarModulo('tareas', this)" class="active">TAREAS</button>
@@ -68,7 +120,21 @@ th, td{
   <button onclick="mostrarModulo('clientes', this)">CLIENTES</button>
 </div>
 
-<div class="container">
+<div class="panel">
+  <button class="btn">+ NUEVO</button>
+
+  <span style="color:#C9A84C;">| FILTROS:</span>
+
+  <select class="select">
+    <option>Todos</option>
+  </select>
+
+  <select class="select">
+    <option>Todos</option>
+  </select>
+</div>
+
+<div class="table-box">
   <table>
     <thead>
       <tr>
@@ -84,70 +150,34 @@ th, td{
 
 <script>
 
-// 🔥 YA NO USAMOS GOOGLE DIRECTO
 const API = "/api/data";
 
-// ===================== NAVEGACIÓN =====================
+// NAV
 function mostrarModulo(modulo, btn){
-
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
 
-  if(modulo === "propiedades") cargarPropiedades();
-  if(modulo === "proyectos") cargarProyectos();
-  if(modulo === "clientes") cargarClientes();
-  if(modulo === "tareas") cargarTareas();
+  if(modulo==="tareas") cargar("read_tareas");
+  if(modulo==="propiedades") cargar("read_propiedades");
+  if(modulo==="proyectos") cargar("read_proyectos");
+  if(modulo==="clientes") cargar("read_clientes");
 }
 
-// ===================== PROPIEDADES =====================
-async function cargarPropiedades(){
+// FETCH
+async function cargar(action){
   try{
-    const res = await fetch(API + "?action=read_propiedades");
+    const res = await fetch(API + "?action=" + action);
     const json = await res.json();
-    renderTabla(json.data);
+    render(json.data);
   }catch(e){
-    console.error("Error propiedades", e);
+    console.error(e);
   }
 }
 
-// ===================== PROYECTOS 🔥 =====================
-async function cargarProyectos(){
-  try{
-    const res = await fetch(API + "?action=read_proyectos");
-    const json = await res.json();
-    renderTabla(json.data);
-  }catch(e){
-    console.error("Error proyectos", e);
-  }
-}
-
-// ===================== CLIENTES =====================
-async function cargarClientes(){
-  try{
-    const res = await fetch(API + "?action=read_clientes");
-    const json = await res.json();
-    renderTabla(json.data);
-  }catch(e){
-    console.error("Error clientes", e);
-  }
-}
-
-// ===================== TAREAS =====================
-async function cargarTareas(){
-  try{
-    const res = await fetch(API + "?action=read_tareas");
-    const json = await res.json();
-    renderTabla(json.data);
-  }catch(e){
-    console.error("Error tareas", e);
-  }
-}
-
-// ===================== RENDER =====================
-function renderTabla(data){
+// RENDER
+function render(data){
 
   const tabla = document.getElementById("tabla");
-
   tabla.innerHTML = "";
 
   if(!data || data.length === 0){
@@ -155,21 +185,20 @@ function renderTabla(data){
     return;
   }
 
-  data.forEach(p => {
+  data.forEach(p=>{
     tabla.innerHTML += `
       <tr>
         <td>${p.ID || "-"}</td>
-        <td>${p.TITULO || p.NOMBRE || "-"}</td>
+        <td>${p.TITULO || "-"}</td>
         <td>${p.CIUDAD || "-"}</td>
         <td>$ ${p.PRECIO ? Number(p.PRECIO).toLocaleString() : "-"}</td>
       </tr>
     `;
   });
-
 }
 
 // INIT
-cargarTareas();
+cargar("read_tareas");
 
 </script>
 
