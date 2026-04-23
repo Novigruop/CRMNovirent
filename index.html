@@ -13,28 +13,17 @@ body {
   color:white;
 }
 
-/* HEADER */
 header{
   text-align:center;
-  padding:30px;
-}
-
-header h1{
+  padding:20px;
+  font-size:28px;
   color:#C9A84C;
-  font-size:40px;
 }
 
-header p{
-  color:#aaa;
-  font-size:12px;
-  letter-spacing:2px;
-}
-
-/* TABS */
 .tabs{
   display:flex;
   justify-content:center;
-  gap:40px;
+  gap:20px;
   border-bottom:1px solid #222;
 }
 
@@ -42,7 +31,7 @@ header p{
   background:none;
   border:none;
   color:#aaa;
-  padding:15px;
+  padding:10px;
   cursor:pointer;
 }
 
@@ -51,40 +40,8 @@ header p{
   border-bottom:2px solid #C9A84C;
 }
 
-/* PANEL */
-.panel{
-  margin:20px;
-  padding:15px;
-  background:#111;
-  border-radius:10px;
-  display:flex;
-  gap:15px;
-  align-items:center;
-}
-
-.btn{
-  background:#C9A84C;
-  color:black;
-  border:none;
-  padding:10px 15px;
-  border-radius:5px;
-  cursor:pointer;
-}
-
-.select{
-  background:#1a1a1a;
-  border:1px solid #333;
-  color:white;
-  padding:8px;
-  border-radius:5px;
-}
-
-/* TABLA */
-.table-box{
-  margin:20px;
-  background:#111;
-  border-radius:10px;
-  overflow:hidden;
+.container{
+  padding:20px;
 }
 
 table{
@@ -92,26 +49,17 @@ table{
   border-collapse:collapse;
 }
 
-th{
-  color:#C9A84C;
-  font-size:12px;
-  letter-spacing:1px;
-  padding:15px;
-}
-
-td{
-  padding:12px;
-  border-top:1px solid #222;
+th, td{
+  padding:10px;
+  border-bottom:1px solid #222;
+  text-align:left;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>NOVIGROUP</h1>
-  <p>GESTIÓN INMOBILIARIA</p>
-</header>
+<header>NOVIGROUP CRM</header>
 
 <div class="tabs">
   <button onclick="mostrarModulo('tareas', this)" class="active">TAREAS</button>
@@ -120,21 +68,7 @@ td{
   <button onclick="mostrarModulo('clientes', this)">CLIENTES</button>
 </div>
 
-<div class="panel">
-  <button class="btn">+ NUEVO</button>
-
-  <span style="color:#C9A84C;">| FILTROS:</span>
-
-  <select class="select">
-    <option>Todos</option>
-  </select>
-
-  <select class="select">
-    <option>Todos</option>
-  </select>
-</div>
-
-<div class="table-box">
+<div class="container">
   <table>
     <thead>
       <tr>
@@ -150,32 +84,55 @@ td{
 
 <script>
 
-const API = "/api/data";
+const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
 
-// NAV
+// ===================== DATA =====================
+let dataProyectos = [];
+
+// ===================== NAVEGACIÓN =====================
 function mostrarModulo(modulo, btn){
+
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
 
-  if(modulo==="tareas") cargar("read_tareas");
-  if(modulo==="propiedades") cargar("read_propiedades");
-  if(modulo==="proyectos") cargar("read_proyectos");
-  if(modulo==="clientes") cargar("read_clientes");
+  if(modulo === "propiedades") cargarPropiedades();
+  if(modulo === "proyectos") cargarProyectos();
+  if(modulo === "clientes") cargarClientes();
+  if(modulo === "tareas") cargarTareas();
 }
 
-// FETCH
-async function cargar(action){
-  try{
-    const res = await fetch(API + "?action=" + action);
-    const json = await res.json();
-    render(json.data);
-  }catch(e){
-    console.error(e);
-  }
+// ===================== PROPIEDADES =====================
+async function cargarPropiedades(){
+  const res = await fetch(API + "?action=read_propiedades");
+  const json = await res.json();
+  renderTabla(json.data);
 }
 
-// RENDER
-function render(data){
+// ===================== PROYECTOS 🔥 =====================
+async function cargarProyectos(){
+  const res = await fetch(API + "?action=read_proyectos");
+  const json = await res.json();
+
+  dataProyectos = json.data || [];
+  renderTabla(dataProyectos);
+}
+
+// ===================== CLIENTES =====================
+async function cargarClientes(){
+  const res = await fetch(API + "?action=read_clientes");
+  const json = await res.json();
+  renderTabla(json.data);
+}
+
+// ===================== TAREAS =====================
+async function cargarTareas(){
+  const res = await fetch(API + "?action=read_tareas");
+  const json = await res.json();
+  renderTabla(json.data);
+}
+
+// ===================== RENDER =====================
+function renderTabla(data){
 
   const tabla = document.getElementById("tabla");
   tabla.innerHTML = "";
@@ -185,20 +142,21 @@ function render(data){
     return;
   }
 
-  data.forEach(p=>{
+  data.forEach(p => {
     tabla.innerHTML += `
       <tr>
         <td>${p.ID || "-"}</td>
-        <td>${p.TITULO || "-"}</td>
+        <td>${p.TITULO || p.NOMBRE || "-"}</td>
         <td>${p.CIUDAD || "-"}</td>
         <td>$ ${p.PRECIO ? Number(p.PRECIO).toLocaleString() : "-"}</td>
       </tr>
     `;
   });
+
 }
 
 // INIT
-cargar("read_tareas");
+cargarTareas();
 
 </script>
 
