@@ -56,9 +56,7 @@ textarea{grid-column:span 2;min-height:110px}
 .row{display:flex;gap:12px}
 .row > div{flex:1}
 
-.close{
-float:right;color:#999;cursor:pointer;font-size:18px
-}
+.close{float:right;color:#999;cursor:pointer;font-size:18px}
 </style>
 </head>
 
@@ -67,10 +65,7 @@ float:right;color:#999;cursor:pointer;font-size:18px
 <header>NOVIGROUP</header>
 
 <div class="tabs">
-<button onclick="tab('tareas',this)">TAREAS</button>
-<button onclick="tab('propiedades',this)" class="active">PROPIEDADES</button>
-<button onclick="tab('proyectos',this)">PROYECTOS</button>
-<button onclick="tab('clientes',this)">CLIENTES</button>
+<button class="active">PROPIEDADES</button>
 </div>
 
 <div class="container">
@@ -93,7 +88,7 @@ float:right;color:#999;cursor:pointer;font-size:18px
 </table>
 </div>
 
-<!-- MODAL PROPIEDAD -->
+<!-- MODAL -->
 <div id="modal" class="modal">
 <div class="box" onclick="event.stopPropagation()">
 
@@ -103,161 +98,96 @@ float:right;color:#999;cursor:pointer;font-size:18px
 
 <div>
 <label>TÍTULO DE LA PROPIEDAD</label>
-<input id="titulo" placeholder="Ej: Apartamento moderno en el centro">
+<input id="titulo">
 </div>
 
 <div class="row">
 <div>
 <label>TIPO DE NEGOCIO</label>
-<select id="negocio">
-<option>VENTA</option>
-<option>RENTA</option>
-</select>
+<select id="negocio"><option>VENTA</option><option>RENTA</option></select>
 </div>
-
 <div>
 <label>TIPO DE INMUEBLE</label>
-<select id="tipo">
-<option>CASA</option>
-<option>APARTAMENTO</option>
-<option>LOTE</option>
-</select>
+<select id="tipo"><option>CASA</option><option>APARTAMENTO</option><option>LOTE</option></select>
 </div>
 </div>
 
 <div class="row">
 <div>
 <label>ESTADO</label>
-<select id="estado">
-<option>DISPONIBLE</option>
-<option>VENDIDO</option>
-</select>
+<select id="estado"><option>DISPONIBLE</option><option>VENDIDO</option></select>
 </div>
-
 <div>
 <label>DESTACADO</label>
-<select id="destacado">
-<option>NO</option>
-<option>SI</option>
-</select>
+<select id="destacado"><option>NO</option><option>SI</option></select>
 </div>
 </div>
 
 <div class="section-title">UBICACIÓN</div>
 
 <div class="row">
-<div>
-<label>PAÍS</label>
-<input id="pais" value="Colombia">
-</div>
-<div>
-<label>DEPARTAMENTO</label>
-<input id="departamento">
-</div>
+<div><label>PAÍS</label><input id="pais" value="Colombia"></div>
+<div><label>DEPARTAMENTO</label><input id="departamento"></div>
 </div>
 
 <div class="row">
-<div>
-<label>CIUDAD</label>
-<input id="ciudad">
-</div>
-<div>
-<label>LOCALIDAD / BARRIO</label>
-<input id="localidad" placeholder="Ej: El Poblado">
-</div>
+<div><label>CIUDAD</label><input id="ciudad"></div>
+<div><label>LOCALIDAD / BARRIO</label><input id="localidad"></div>
 </div>
 
 <div class="section-title">CARACTERÍSTICAS</div>
 
 <div class="row">
-<div>
-<label>PRECIO (COP)</label>
-<input id="precio">
-</div>
-<div>
-<label>ÁREA (M²)</label>
-<input id="area">
-</div>
+<div><label>PRECIO</label><input id="precio"></div>
+<div><label>ÁREA</label><input id="area"></div>
 </div>
 
 <div class="row">
-<div>
-<label>ALCOBAS</label>
-<input id="alcobas">
-</div>
-<div>
-<label>BAÑOS</label>
-<input id="banos">
-</div>
+<div><label>ALCOBAS</label><input id="alcobas"></div>
+<div><label>BAÑOS</label><input id="banos"></div>
 </div>
 
 <div class="row">
-<div>
-<label>ESTRATO</label>
-<input id="estrato">
-</div>
-<div>
-<label>PISO</label>
-<input id="pisos">
-</div>
+<div><label>ESTRATO</label><input id="estrato"></div>
+<div><label>PISO</label><input id="pisos"></div>
 </div>
 
 <div class="row">
-<div>
-<label>AÑO DE CONSTRUCCIÓN</label>
-<input id="ano">
-</div>
-<div>
-<label>ADMIN (COP/MES)</label>
-<input id="admin">
-</div>
+<div><label>AÑO</label><input id="ano"></div>
+<div><label>ADMIN</label><input id="admin"></div>
 </div>
 
 <div class="row">
-<div>
-<label>GARAJE (CANTIDAD)</label>
-<input id="garaje" value="0">
-</div>
-<div>
-<label>PARQUEADEROS INTERNOS</label>
-<input id="internas" value="0">
-</div>
+<div><label>GARAJE</label><input id="garaje" value="0"></div>
+<div><label>INTERNAS</label><input id="internas" value="0"></div>
 </div>
 
 <div>
-<label>PARQUEADEROS EXTERNOS</label>
+<label>EXTERNAS</label>
 <input id="externas" value="0">
 </div>
 
 <div class="section-title">DESCRIPCIÓN</div>
 
-<div>
-<label>DESCRIPCIÓN PARA PUBLICACIÓN</label>
-<textarea id="descripcion" placeholder="Describa la propiedad..."></textarea>
-</div>
+<textarea id="descripcion"></textarea>
 
 <br>
-<button class="btn" onclick="guardar()">GUARDAR PROPIEDAD</button>
+<button class="btn" onclick="guardar()">GUARDAR</button>
 
 </div>
 </div>
 
 <script>
 
-const API = "PEGA_AQUI_TU_URL_APPS_SCRIPT";
+// 🔥 TU URL YA CONFIGURADA
+const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
 
-function abrirModal(){
-document.getElementById("modal").classList.add("active");
-}
+function abrirModal(){ modal.classList.add("active"); }
+function cerrar(){ modal.classList.remove("active"); }
+modal.addEventListener("click", cerrar);
 
-function cerrar(){
-document.getElementById("modal").classList.remove("active");
-}
-
-document.getElementById("modal").addEventListener("click",cerrar);
-
+// 🔥 GUARDAR
 async function guardar(){
-
 await fetch(API,{
 method:"POST",
 body:JSON.stringify({
@@ -284,27 +214,40 @@ precio:precio.value,
 area:area.value
 })
 });
-
 cerrar();
 cargar();
 }
 
+// 🔥 CARGAR (ARREGLADO)
 async function cargar(){
+try{
 const r = await fetch(API+"?action=read_propiedades");
 const j = await r.json();
 
+console.log("DATA:", j);
+
+if(!j.data || j.data.length === 0){
+tabla.innerHTML = "<tr><td colspan='8'>Sin propiedades</td></tr>";
+return;
+}
+
 tabla.innerHTML = j.data.map(p=>`
 <tr>
-<td>${p.ID}</td>
-<td>${p.TITULO}</td>
-<td>${p.NEGOCIO}</td>
-<td>${p.TIPO}</td>
-<td>${p.CIUDAD}</td>
-<td>$ ${p.PRECIO}</td>
-<td>${p.AREA}</td>
-<td>${p.ESTADO}</td>
+<td>${p.ID || ""}</td>
+<td>${p.TITULO || ""}</td>
+<td>${p.NEGOCIO || ""}</td>
+<td>${p.TIPO || ""}</td>
+<td>${p.CIUDAD || ""}</td>
+<td>$ ${p.PRECIO || ""}</td>
+<td>${p.AREA || ""}</td>
+<td>${p.ESTADO || ""}</td>
 </tr>
 `).join("");
+
+}catch(e){
+console.error(e);
+tabla.innerHTML = "<tr><td colspan='8'>Error conexión API</td></tr>";
+}
 }
 
 cargar();
