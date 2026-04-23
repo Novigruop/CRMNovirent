@@ -3,365 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOVIGROUP — CRM Inmobiliario</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>NOVIGROUP CRM</title>
+
 <style>
-:root {
-  --gold: #C9A84C;
-  --gold-light: #E8C97A;
-  --gold-dim: #8B6914;
-  --gold-glow: rgba(201,168,76,0.15);
-  --black: #090909;
-  --black-2: #101010;
-  --black-3: #181818;
-  --black-4: #202020;
-  --black-5: #2A2A2A;
-  --white: #F0EBE1;
-  --white-dim: #8A8070;
-  --border: rgba(201,168,76,0.18);
-  --border-bright: rgba(201,168,76,0.5);
-  --red: #C94C4C;
-  --blue: #4A90D9;
-  --green: #4CAF7A;
-  --purple: #9B59B6;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{font-family:'Montserrat',sans-serif;background:var(--black);color:var(--white);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
-
-/* ── FONDO DECORATIVO ── */
-body::before{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(201,168,76,0.05) 0%,transparent 70%);
-  pointer-events:none;z-index:0
-}
-
-/* ── HEADER ── */
-header{
-  background:rgba(10,10,10,0.95);border-bottom:1px solid var(--border);
-  padding:0 2rem;display:flex;align-items:center;justify-content:space-between;
-  height:72px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);
-}
-.logo-area{display:flex;align-items:center;gap:14px;text-decoration:none}
-.logo-mark{
-  width:40px;height:40px;border:1.5px solid var(--gold);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;
-  color:var(--gold);position:relative;
-}
-.logo-mark::before{
-  content:'';position:absolute;inset:-4px;border:1px solid rgba(201,168,76,0.2);
-}
-.logo-name{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--gold);letter-spacing:5px;text-transform:uppercase;line-height:1}
-.logo-sub{font-size:0.55rem;letter-spacing:3.5px;color:var(--white-dim);text-transform:uppercase;font-weight:500;margin-top:2px}
-.header-right{display:flex;align-items:center;gap:16px}
-#loading{font-size:0.65rem;color:var(--gold);letter-spacing:3px;display:none;font-weight:600}
-.loading-dot{display:inline-block;animation:pulse 1.2s infinite}
-.loading-dot:nth-child(2){animation-delay:.2s}
-.loading-dot:nth-child(3){animation-delay:.4s}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.2}}
-.header-badge{font-size:0.6rem;letter-spacing:2px;color:var(--gold-dim);border:1px solid var(--border);padding:5px 12px;font-weight:600}
-
-/* ── TABS ── */
-nav.tabs{
-  background:rgba(10,10,10,0.9);border-bottom:1px solid var(--border);
-  display:flex;padding:0 2rem;position:sticky;top:72px;z-index:90;
-  backdrop-filter:blur(8px);
-}
-.tab-btn{
-  background:none;border:none;padding:16px 32px;cursor:pointer;
-  font-family:'Montserrat',sans-serif;font-size:0.65rem;font-weight:700;
-  letter-spacing:3px;text-transform:uppercase;color:var(--white-dim);
-  border-bottom:2px solid transparent;transition:all 0.3s;position:relative;
-}
-.tab-btn:hover{color:var(--white)}
-.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
-.tab-count{
-  background:var(--gold-dim);color:var(--black);font-size:0.55rem;
-  font-weight:800;padding:1px 6px;margin-left:8px;border-radius:20px;
-  vertical-align:middle;
-}
-
-/* ── LAYOUT ── */
-.container{padding:28px 32px;max-width:1500px;margin:0 auto;width:100%;flex:1;position:relative;z-index:1}
-.module{display:none;animation:fadeUp .35s ease}
-.module.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── STATS ── */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px}
-.stat-card{
-  background:var(--black-3);border:1px solid var(--border);padding:18px 20px;
-  position:relative;overflow:hidden;cursor:default;transition:border-color .3s;
-}
-.stat-card:hover{border-color:var(--border-bright)}
-.stat-card::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:linear-gradient(180deg,var(--gold),var(--gold-dim))}
-.stat-card::after{content:'';position:absolute;top:0;right:0;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.03));pointer-events:none}
-.stat-label{font-size:0.58rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--white-dim);margin-bottom:10px;font-weight:600}
-.stat-value{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--gold-light);line-height:1}
-
-/* ── TOOLBAR ── */
-.toolbar{
-  background:var(--black-3);border:1px solid var(--border);
-  padding:12px 18px;margin-bottom:18px;display:flex;gap:10px;
-  flex-wrap:wrap;align-items:center;
-}
-.btn-new{
-  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
-  color:var(--black);border:none;padding:9px 20px;cursor:pointer;
-  font-family:'Montserrat',sans-serif;font-size:0.65rem;font-weight:800;
-  letter-spacing:2px;text-transform:uppercase;transition:all .3s;white-space:nowrap;
-}
-.btn-new:hover{background:linear-gradient(135deg,var(--gold),var(--gold-light));box-shadow:0 0 20px rgba(201,168,76,0.25)}
-.sep{width:1px;height:22px;background:var(--border-bright);margin:0 4px;flex-shrink:0}
-.filter-label{font-size:0.6rem;letter-spacing:2px;color:var(--gold-dim);text-transform:uppercase;font-weight:700;white-space:nowrap}
-.search-box{position:relative;display:flex;align-items:center}
-.search-box input{padding-left:30px;width:200px}
-.search-icon{position:absolute;left:10px;color:var(--white-dim);font-size:.8rem;pointer-events:none}
-
-/* ── INPUTS ── */
-input,select,textarea{
-  background:var(--black-4);border:1px solid var(--border);
-  color:var(--white);padding:9px 12px;font-family:'Montserrat',sans-serif;
-  font-size:0.78rem;outline:none;transition:border-color .25s,box-shadow .25s;
-  -webkit-appearance:none;
-}
-input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.08)}
-select option{background:var(--black-3);color:var(--white)}
-input::placeholder,textarea::placeholder{color:var(--white-dim);opacity:.7}
-input:disabled,select:disabled,textarea:disabled{opacity:.45;cursor:not-allowed}
-
-/* ── TABLE ── */
-.table-wrap{overflow-x:auto;background:var(--black-2);border:1px solid var(--border)}
-table{width:100%;border-collapse:collapse;min-width:800px}
-thead tr{background:var(--black-3);border-bottom:1px solid var(--gold-dim)}
-th{padding:13px 16px;text-align:left;font-size:0.58rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);white-space:nowrap;cursor:pointer;user-select:none}
-th:hover{color:var(--gold-light)}
-th .sort-icon{margin-left:4px;opacity:.4;font-size:.7rem}
-th.sorted .sort-icon{opacity:1;color:var(--gold-light)}
-td{padding:13px 16px;font-size:0.78rem;border-bottom:1px solid rgba(201,168,76,0.08);color:var(--white);vertical-align:middle}
-tbody tr{transition:background .15s;cursor:pointer}
-tbody tr:hover{background:var(--black-3)}
-tbody tr:last-child td{border-bottom:none}
-.td-truncate{max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.td-muted{color:var(--white-dim);font-size:.72rem}
-.price-cell{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:var(--gold-light);white-space:nowrap}
-
-/* ── BADGES ── */
-.badge{padding:3px 9px;font-size:0.58rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:inline-block;white-space:nowrap}
-.bg-pendiente  {background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.35)}
-.bg-proceso    {background:rgba(74,144,217,.12);color:var(--blue);border:1px solid rgba(74,144,217,.35)}
-.bg-completada {background:rgba(76,175,122,.12);color:var(--green);border:1px solid rgba(76,175,122,.35)}
-.bg-cancelada  {background:rgba(201,76,76,.12);color:var(--red);border:1px solid rgba(201,76,76,.35)}
-.bg-disponible {background:rgba(76,175,122,.12);color:var(--green);border:1px solid rgba(76,175,122,.35)}
-.bg-vendido    {background:rgba(201,76,76,.12);color:var(--red);border:1px solid rgba(201,76,76,.35)}
-.bg-separado   {background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.35)}
-.bg-arrendado  {background:rgba(155,89,182,.12);color:var(--purple);border:1px solid rgba(155,89,182,.35)}
-.bg-inactivo   {background:rgba(80,80,80,.2);color:#666;border:1px solid rgba(80,80,80,.35)}
-.badge-dest{background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:var(--black);padding:2px 7px;font-size:.52rem;font-weight:800;margin-left:6px;vertical-align:middle;letter-spacing:1px}
-
-/* ── EMPTY STATE ── */
-.empty-state{text-align:center;padding:70px 20px;color:var(--white-dim)}
-.empty-icon{font-family:'Cormorant Garamond',serif;font-size:3rem;opacity:.15;margin-bottom:14px;display:block}
-.empty-text{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;font-weight:600}
-
-/* ── MODAL ── */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;backdrop-filter:blur(6px);overflow-y:auto;padding:24px 16px}
-.modal-content{
-  background:var(--black-2);border:1px solid var(--border-bright);
-  margin:0 auto;width:100%;max-width:740px;
-  box-shadow:0 0 80px rgba(201,168,76,.08),0 30px 80px rgba(0,0,0,.7);
-  animation:slideUp .3s cubic-bezier(.22,.61,.36,1);
-}
-@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-.modal-header{
-  background:var(--black-3);border-bottom:1px solid var(--border-bright);
-  padding:20px 26px;display:flex;justify-content:space-between;align-items:center;
-}
-.modal-header h3{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;color:var(--gold-light);letter-spacing:2px}
-.modal-close{background:none;border:none;color:var(--white-dim);font-size:1.5rem;cursor:pointer;transition:color .2s;line-height:1;padding:0 4px}
-.modal-close:hover{color:var(--gold)}
-.modal-body{padding:24px 26px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.full{grid-column:span 2}
-.form-group label{display:block;margin-bottom:6px;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim)}
-.form-group input,.form-group select,.form-group textarea{width:100%}
-.form-group textarea{resize:vertical;height:80px}
-.sec-title{grid-column:span 2;font-size:.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);padding-bottom:8px;border-bottom:1px solid var(--border);margin-top:4px}
-.sec-div{grid-column:span 2;border:none;border-top:1px solid var(--border);margin:2px 0}
-.modal-footer{padding:16px 26px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:var(--black-3)}
-.btn-cancel{background:none;border:1px solid var(--border-bright);color:var(--white-dim);padding:9px 22px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s}
-.btn-cancel:hover{color:var(--white);border-color:var(--white-dim)}
-.btn-save{background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:var(--black);border:none;padding:9px 28px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;transition:all .3s}
-.btn-save:hover{background:linear-gradient(135deg,var(--gold),var(--gold-light));box-shadow:0 4px 20px rgba(201,168,76,.3)}
-.btn-save:disabled{background:var(--black-5);color:var(--white-dim);cursor:wait;box-shadow:none}
-.btn-danger{background:rgba(201,76,76,.15);border:1px solid rgba(201,76,76,.4);color:var(--red);padding:9px 18px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;margin-right:auto}
-.btn-danger:hover{background:rgba(201,76,76,.25)}
-
-/* ── INFO CHIPS ── */
-.info-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;grid-column:span 2}
-.chip{background:var(--black-4);border:1px solid var(--border);padding:5px 12px;font-size:.65rem;color:var(--white-dim)}
-.chip strong{color:var(--gold-light);font-weight:600}
-
-/* ── FOTOS ── */
-.fotos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:8px}
-.foto-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--border);cursor:pointer;transition:border-color .2s,transform .2s}
-.foto-thumb:hover{border-color:var(--gold);transform:scale(1.02)}
-.video-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--gold);font-size:.72rem;font-weight:600;text-decoration:none}
-.video-link:hover{color:var(--gold-light)}
-
-/* ── FOOTER ── */
-footer{background:var(--black-2);border-top:1px solid var(--border);padding:18px 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:relative;z-index:1}
-.footer-brand{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--gold);letter-spacing:4px}
-.footer-info{font-size:.6rem;letter-spacing:2px;color:var(--white-dim);text-transform:uppercase}
-.footer-info strong{color:var(--gold-dim)}
-
-/* ── TOAST ── */
-#toast{
-  position:fixed;bottom:24px;right:24px;z-index:9999;
-  background:var(--black-3);border:1px solid var(--border-bright);
-  padding:14px 20px;max-width:320px;font-size:.72rem;font-weight:600;
-  letter-spacing:1px;box-shadow:0 8px 40px rgba(0,0,0,.6);
-  transform:translateY(20px);opacity:0;transition:all .35s;pointer-events:none;
-}
-#toast.show{transform:translateY(0);opacity:1}
-#toast.success{border-left:3px solid var(--green);color:var(--green)}
-#toast.error{border-left:3px solid var(--red);color:var(--red)}
-
-/* ── RESPONSIVE ── */
-@media(max-width:640px){
-  .container{padding:16px}
-  .tabs{padding:0 1rem}
-  .tab-btn{padding:14px 14px;font-size:.6rem;letter-spacing:2px}
-  header{padding:0 1rem}
-  .modal-body{grid-template-columns:1fr}
-  .full,.sec-title,.sec-div,.info-chips{grid-column:span 1}
-  .stat-value{font-size:1.8rem}
-}
+body{font-family:Arial;background:#0a0a0a;color:#fff;margin:0}
+header{padding:15px;background:#111;color:#C9A84C;font-weight:bold}
+.tabs{display:flex;background:#000;border-bottom:1px solid #333}
+.tab-btn{flex:1;padding:12px;border:none;background:none;color:#aaa;cursor:pointer}
+.tab-btn.active{color:#C9A84C;border-bottom:2px solid #C9A84C}
+.container{padding:20px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #222}
+.btn{background:#C9A84C;color:#000;padding:8px 15px;border:none;cursor:pointer}
 </style>
 </head>
+
 <body>
 
-<!-- HEADER -->
-<header>
-  <div class="logo-area">
-    <div class="logo-mark">N</div>
-    <div>
-      <div class="logo-name">Novigroup</div>
-      <div class="logo-sub">Inmobiliaria Digital</div>
-    </div>
-  </div>
-  <div class="header-right">
-    <div id="loading">SINCRONIZANDO<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></div>
-    <div class="header-badge">CRM v2.0</div>
-  </div>
-</header>
+<header>NOVIGROUP CRM</header>
 
-<!-- TABS -->
 <nav class="tabs">
-  <button class="tab-btn active" onclick="verModulo('tareas',this)">
-    Tareas <span class="tab-count" id="cnt-tareas">0</span>
-  </button>
-  <button class="tab-btn" onclick="verModulo('propiedades',this)">
-    Propiedades <span class="tab-count" id="cnt-propiedades">0</span>
-  </button>
-  <button class="tab-btn" onclick="verModulo('clientes',this)">
-    Clientes <span class="tab-count" id="cnt-clientes">0</span>
-  </button>
+  <button class="tab-btn active" onclick="verModulo('propiedades',this)">Propiedades</button>
+  <button class="tab-btn" onclick="verModulo('proyectos',this)">Proyectos</button>
 </nav>
 
-<!-- ════════════════════════════════ TAREAS ════════════════════════════════ -->
-<div id="mod-tareas" class="container module active">
-  <div id="statsTar" class="stats-row"></div>
-  <div class="toolbar">
-    <button class="btn-new" onclick="abrirTarea(true)">+ Nueva Tarea</button>
-    <div class="sep"></div>
-    <span class="filter-label">Filtrar</span>
-    <input type="date" id="fTarFecha" onchange="renderTareas()" style="width:148px">
-    <select id="fTarResp" onchange="renderTareas()" style="width:170px">
-      <option value="">Responsable: Todos</option>
-      <option value="JUAN ROMERO">JUAN ROMERO</option>
-      <option value="SEBAS CUERVO">SEBAS CUERVO</option>
-    </select>
-    <select id="fTarEst" onchange="renderTareas()" style="width:160px">
-      <option value="">Estado: Todos</option>
-      <option value="PENDIENTE">PENDIENTE</option>
-      <option value="EN PROCESO">EN PROCESO</option>
-      <option value="COMPLETADA">COMPLETADA</option>
-      <option value="CANCELADA">CANCELADA</option>
-    </select>
-    <div class="search-box" style="margin-left:auto">
-      <span class="search-icon">⌕</span>
-      <input type="text" id="fTarSearch" placeholder="Buscar..." oninput="renderTareas()" style="width:180px">
-    </div>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th onclick="sortTable('tareas','FECHA',this)">Fecha <span class="sort-icon">↕</span></th>
-          <th onclick="sortTable('tareas','CLIENTE',this)">Cliente <span class="sort-icon">↕</span></th>
-          <th>Actividad</th>
-          <th onclick="sortTable('tareas','RESPONSABLE',this)">Responsable <span class="sort-icon">↕</span></th>
-          <th onclick="sortTable('tareas','ESTADO',this)">Estado <span class="sort-icon">↕</span></th>
-          <th>Notas</th>
-        </tr>
-      </thead>
-      <tbody id="tblTareas"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ════════════════════════════════ PROPIEDADES ════════════════════════════════ -->
-<div id="mod-propiedades" class="container module">
-  <div id="statsPro" class="stats-row"></div>
-  <div class="toolbar">
-    <button class="btn-new" onclick="abrirPropiedad(true)">+ Nueva Propiedad</button>
-    <div class="sep"></div>
-    <span class="filter-label">Filtrar</span>
-    <select id="fProNeg" onchange="renderPropiedades()" style="width:140px">
-      <option value="">Negocio: Todos</option>
-      <option value="VENTA">VENTA</option>
-      <option value="ARRIENDO">ARRIENDO</option>
-      <option value="PERMUTA">PERMUTA</option>
-    </select>
-    <select id="fProTipo" onchange="renderPropiedades()" style="width:150px">
-      <option value="">Tipo: Todos</option>
-      <option value="CASA">CASA</option>
-      <option value="APARTAMENTO">APARTAMENTO</option>
-      <option value="LOTE">LOTE</option>
-      <option value="FINCA">FINCA</option>
-      <option value="LOCAL">LOCAL</option>
-      <option value="OFICINA">OFICINA</option>
-      <option value="BODEGA">BODEGA</option>
-    </select>
-    <select id="fProEst" onchange="renderPropiedades()" style="width:150px">
-      <option value="">Estado: Todos</option>
-      <option value="DISPONIBLE">DISPONIBLE</option>
-      <option value="SEPARADO">SEPARADO</option>
-      <option value="VENDIDO">VENDIDO</option>
-      <option value="ARRENDADO">ARRENDADO</option>
-      <option value="INACTIVO">INACTIVO</option>
-    </select>
-    <select id="fProCiudad" onchange="renderPropiedades()" style="width:140px">
-      <option value="">Ciudad: Todas</option>
-    </select>
-    <div class="search-box" style="margin-left:auto">
-      <span class="search-icon">⌕</span>
-      <input type="text" id="fProSearch" placeholder="Buscar..." oninput="renderPropiedades()" style="width:180px">
-    </div>
-  </div>
+<!-- PROPIEDADES -->
+<div id="mod-propiedades" class="container module active">
+  <button class="btn" onclick="cargarPropiedades()">Actualizar</button>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
           <th>ID</th>
-          <th onclick="sortTable('propiedades','TITULO',this)">Título <span class="sort-icon">↕</span></th>
-          <th onclick="sortTable('propiedades','NEGOCIO',this)">Negocio <span class="sort-icon">↕</span></th>
-          <th onclick="sortTable('propiedades','TIPO',this)">Tipo <span class="sort-icon">↕</span></th>
-          <th onclick="sortTable('propiedades','CIUDAD',this)">Ciudad <span class="sort-icon">↕</span></th>
-          <th onclick="sortTable('propiedades','PRECIO',this)">Precio <span class="sort-icon">↕</span></th>
-          <th>Área</th>
-          <th onclick="sortTable('propiedades','ESTADO',this)">Estado <span class="sort-icon">↕</span></th>
+          <th>Título</th>
+          <th>Ciudad</th>
+          <th>Precio</th>
         </tr>
       </thead>
       <tbody id="tblPropiedades"></tbody>
@@ -369,694 +46,85 @@ footer{background:var(--black-2);border-top:1px solid var(--border);padding:18px
   </div>
 </div>
 
-<!-- ════════════════════════════════ CLIENTES ════════════════════════════════ -->
-<div id="mod-clientes" class="container module">
-  <div id="statsCli" class="stats-row"></div>
-  <div class="toolbar">
-    <button class="btn-new" onclick="abrirCliente(true)">+ Nuevo Cliente</button>
-    <div class="sep"></div>
-    <span class="filter-label">Filtrar</span>
-    <select id="fCliTipo" onchange="renderClientes()" style="width:200px">
-      <option value="">Tipo: Todos</option>
-      <option value="VENTA">VENTA</option>
-      <option value="ADMINISTRACION">ADMINISTRACIÓN</option>
-      <option value="CREDITO/SUBSIDIO">CRÉDITO / SUBSIDIO</option>
-    </select>
-    <select id="fCliEst" onchange="renderClientes()" style="width:160px">
-      <option value="">Estado: Todos</option>
-      <option value="PENDIENTE">PENDIENTE</option>
-      <option value="EN PROCESO">EN PROCESO</option>
-      <option value="COMPLETADA">COMPLETADA</option>
-      <option value="CANCELADA">CANCELADA</option>
-    </select>
-    <div class="search-box" style="margin-left:auto">
-      <span class="search-icon">⌕</span>
-      <input type="text" id="fCliSearch" placeholder="Buscar..." oninput="renderClientes()" style="width:180px">
-    </div>
-  </div>
+<!-- PROYECTOS -->
+<div id="mod-proyectos" class="container module">
+  <button class="btn" onclick="cargarProyectos()">Actualizar</button>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th onclick="sortTable('clientes','NOMBRE',this)">Nombre <span class="sort-icon">↕</span></th>
-          <th>Cédula / NIT</th>
-          <th>Teléfono</th>
-          <th onclick="sortTable('clientes','TIPO_SERVICIO',this)">Tipo <span class="sort-icon">↕</span></th>
-          <th onclick="sortTable('clientes','ESTADO_CLIENTE',this)">Estado <span class="sort-icon">↕</span></th>
-          <th>Notas</th>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Ciudad</th>
+          <th>Precio</th>
         </tr>
       </thead>
-      <tbody id="tblClientes"></tbody>
+      <tbody id="tblProyectos"></tbody>
     </table>
   </div>
 </div>
 
-<footer>
-  <div class="footer-brand">NOVIGROUP</div>
-  <div class="footer-info">Inmobiliaria Digital &nbsp;·&nbsp; <strong>CRM v2.0 © 2026</strong></div>
-</footer>
-
-<!-- ════════════════════════════════ MODAL TAREA ════════════════════════════════ -->
-<div id="modalTarea" class="modal" onclick="clickFuera(event,'modalTarea')">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="titTarea">Nueva Tarea</h3>
-      <button class="modal-close" onclick="cerrar()">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="tarId">
-      <input type="hidden" id="tarModo">
-
-      <!-- Vista edición: chips informativos -->
-      <div class="info-chips" id="tarChips" style="display:none"></div>
-
-      <div class="sec-title">📋 Información de la Tarea</div>
-      <div class="form-group full">
-        <label>Cliente</label>
-        <select id="tarCliente"></select>
-      </div>
-      <div class="form-group full">
-        <label>Descripción de la Actividad</label>
-        <textarea id="tarActividad" placeholder="Describa la tarea a realizar..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Responsable</label>
-        <select id="tarResp">
-          <option value="">Seleccione...</option>
-          <option value="JUAN ROMERO">JUAN ROMERO</option>
-          <option value="SEBAS CUERVO">SEBAS CUERVO</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Fecha</label>
-        <input type="date" id="tarFecha">
-      </div>
-      <div class="form-group full">
-        <label>Estado</label>
-        <select id="tarEstado">
-          <option value="PENDIENTE">PENDIENTE</option>
-          <option value="EN PROCESO">EN PROCESO</option>
-          <option value="COMPLETADA">COMPLETADA</option>
-          <option value="CANCELADA">CANCELADA</option>
-        </select>
-      </div>
-      <div class="form-group full" id="divTarNotas" style="display:none">
-        <label>Notas de Seguimiento</label>
-        <textarea id="tarNotas" placeholder="Observaciones adicionales..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="cerrar()">Cancelar</button>
-      <button class="btn-save" id="btnTar" onclick="guardarTarea()">Guardar Tarea</button>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════ MODAL PROPIEDAD ════════════════════════════════ -->
-<div id="modalPropiedad" class="modal" onclick="clickFuera(event,'modalPropiedad')">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="titProp">Nueva Propiedad</h3>
-      <button class="modal-close" onclick="cerrar()">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="proId">
-      <input type="hidden" id="proModo">
-
-      <div class="info-chips" id="proChips" style="display:none"></div>
-
-      <div class="sec-title">📋 Identificación</div>
-      <div class="form-group full"><label>Título</label><input type="text" id="proTitulo"></div>
-      <div class="form-group">
-        <label>Tipo de Negocio</label>
-        <select id="proNegocio"><option value="VENTA">VENTA</option><option value="ARRIENDO">ARRIENDO</option><option value="PERMUTA">PERMUTA</option></select>
-      </div>
-      <div class="form-group">
-        <label>Tipo de Inmueble</label>
-        <select id="proTipo"><option value="CASA">CASA</option><option value="APARTAMENTO">APARTAMENTO</option><option value="LOTE">LOTE</option><option value="FINCA">FINCA</option><option value="LOCAL">LOCAL</option><option value="OFICINA">OFICINA</option><option value="BODEGA">BODEGA</option></select>
-      </div>
-      <div class="form-group">
-        <label>Estado</label>
-        <select id="proEstado"><option value="DISPONIBLE">DISPONIBLE</option><option value="SEPARADO">SEPARADO</option><option value="VENDIDO">VENDIDO</option><option value="ARRENDADO">ARRENDADO</option><option value="INACTIVO">INACTIVO</option></select>
-      </div>
-      <div class="form-group">
-        <label>Destacado</label>
-        <select id="proDestacado"><option value="NO">NO</option><option value="SI">★ DESTACAR</option></select>
-      </div>
-
-      <hr class="sec-div">
-      <div class="sec-title">📍 Ubicación</div>
-      <div class="form-group"><label>País</label><input type="text" id="proPais" value="Colombia"></div>
-      <div class="form-group"><label>Departamento</label><input type="text" id="proDepartamento" value="Risaralda"></div>
-      <div class="form-group"><label>Ciudad</label><input type="text" id="proCiudad" value="Pereira"></div>
-      <div class="form-group"><label>Localidad / Barrio</label><input type="text" id="proLocalidad"></div>
-
-      <hr class="sec-div">
-      <div class="sec-title">🏠 Características</div>
-      <div class="form-group"><label>Precio (COP)</label><input type="number" id="proPrecio"></div>
-      <div class="form-group"><label>Área (m²)</label><input type="number" id="proArea"></div>
-      <div class="form-group"><label>Alcobas</label><input type="number" id="proAlcobas" min="0"></div>
-      <div class="form-group"><label>Baños</label><input type="number" id="proBanos" min="0"></div>
-      <div class="form-group"><label>Estrato</label>
-        <select id="proEstrato"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
-      </div>
-      <div class="form-group"><label>Piso</label><input type="number" id="proPiso" min="0"></div>
-      <div class="form-group"><label>Año Construcción</label><input type="number" id="proAno"></div>
-      <div class="form-group"><label>Administración (COP/mes)</label><input type="number" id="proAdmin"></div>
-      <div class="form-group"><label>Garaje</label><input type="number" id="proGaraje" min="0" value="0"></div>
-      <div class="form-group"><label>Parqueaderos Internos</label><input type="number" id="proInternas" min="0" value="0"></div>
-      <div class="form-group"><label>Parqueaderos Externos</label><input type="number" id="proExternas" min="0" value="0"></div>
-      <div class="form-group full"><label>Descripción</label><textarea id="proDescripcion" style="height:90px"></textarea></div>
-
-      <div id="divFotos" class="full" style="display:none">
-        <hr class="sec-div">
-        <div class="sec-title" style="margin-bottom:10px">📷 Galería</div>
-        <div class="fotos-grid" id="fotosGrid"></div>
-        <div id="videoLink"></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="cerrar()">Cancelar</button>
-      <button class="btn-save" id="btnPro" onclick="guardarPropiedad()">Guardar Propiedad</button>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════ MODAL CLIENTE ════════════════════════════════ -->
-<div id="modalCliente" class="modal" onclick="clickFuera(event,'modalCliente')">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="titCli">Nuevo Cliente</h3>
-      <button class="modal-close" onclick="cerrar()">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="cliId">
-      <input type="hidden" id="cliModo">
-
-      <div class="info-chips" id="cliChips" style="display:none"></div>
-
-      <div class="sec-title">👤 Datos Personales</div>
-      <div class="form-group"><label>Nombre Completo</label><input type="text" id="cliNom"></div>
-      <div class="form-group"><label>Cédula / NIT</label><input type="text" id="cliCed"></div>
-      <div class="form-group"><label>Teléfono</label><input type="text" id="cliTel"></div>
-      <div class="form-group"><label>Correo Electrónico</label><input type="text" id="cliCor"></div>
-      <div class="form-group full"><label>Dirección</label><input type="text" id="cliDir"></div>
-
-      <hr class="sec-div">
-      <div class="sec-title">📌 Gestión</div>
-      <div class="form-group"><label>Presupuesto / Valor</label><input type="text" id="cliPre"></div>
-      <div class="form-group">
-        <label>Tipo de Servicio</label>
-        <select id="cliTipo"><option value="VENTA">VENTA</option><option value="ADMINISTRACION">ADMINISTRACIÓN</option><option value="CREDITO/SUBSIDIO">CRÉDITO / SUBSIDIO</option></select>
-      </div>
-      <div class="form-group full">
-        <label>Estado</label>
-        <select id="cliEst"><option value="PENDIENTE">PENDIENTE</option><option value="EN PROCESO">EN PROCESO</option><option value="COMPLETADA">COMPLETADA</option><option value="CANCELADA">CANCELADA</option></select>
-      </div>
-      <div class="form-group full" id="divCliNotas" style="display:none">
-        <label>Notas / Observaciones</label>
-        <textarea id="cliNotas"></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="cerrar()">Cancelar</button>
-      <button class="btn-save" id="btnCli" onclick="guardarCliente()">Guardar Cliente</button>
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div id="toast"></div>
-
-<!-- ════════════════════════════════ JAVASCRIPT ════════════════════════════════ -->
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────
+
 const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
 
-// ── ESTADO GLOBAL ───────────────────────────────────────────────────
-let dTar = [], dCli = [], dProp = [];
-let sortState = { tareas:{col:null,asc:true}, propiedades:{col:null,asc:true}, clientes:{col:null,asc:true} };
+let dProp = [];
+let dProy = [];
 
-// ── INIT ─────────────────────────────────────────────────────────────
-window.onload = () => {
-  document.getElementById('tarFecha').value = hoy();
-  cargarTodo();
-};
-
-function hoy(){ return new Date().toISOString().split('T')[0]; }
-
-async function cargarTodo(){
-  cargando(true);
-  await Promise.all([cargarTareas(), cargarClientes(), cargarPropiedades()]);
-  cargando(false);
-}
-
-function cargando(v){ document.getElementById('loading').style.display = v ? 'block' : 'none'; }
-
-// ── NAVEGACIÓN ────────────────────────────────────────────────────────
+// NAV
 function verModulo(m, btn){
-  document.querySelectorAll('.module').forEach(e => e.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
-  document.getElementById('mod-' + m).classList.add('active');
+  document.querySelectorAll('.module').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
+  document.getElementById('mod-'+m).classList.add('active');
   btn.classList.add('active');
 }
 
-// ── CARGA ─────────────────────────────────────────────────────────────
-async function cargarTareas(){
-  try {
-    const r = await fetch(API + "?action=read_tareas");
-    const j = await r.json();
-    if(j.status==='success'){ dTar = j.data; actualizarStats(); renderTareas(); }
-  } catch(e){ console.error('Tareas:', e); }
-}
-
-async function cargarClientes(){
-  try {
-    const r = await fetch(API + "?action=read_clientes");
-    const j = await r.json();
-    if(j.status==='success'){ dCli = j.data; actualizarStats(); renderClientes(); }
-  } catch(e){ console.error('Clientes:', e); }
-}
-
+// ===================== PROPIEDADES =====================
 async function cargarPropiedades(){
-  try {
-    const r = await fetch(API + "?action=read_propiedades");
-    const j = await r.json();
-    if(j.status==='success'){ dProp = j.data; poblarCiudades(); actualizarStats(); renderPropiedades(); }
-  } catch(e){ console.error('Propiedades:', e); }
-}
-
-// ── STATS ──────────────────────────────────────────────────────────────
-function actualizarStats(){
-  renderStats('statsTar', dTar, 'ESTADO', ['PENDIENTE','EN PROCESO','COMPLETADA','CANCELADA']);
-  renderStats('statsPro', dProp, 'ESTADO', ['DISPONIBLE','SEPARADO','VENDIDO','ARRENDADO']);
-  renderStats('statsCli', dCli, 'ESTADO_CLIENTE', ['PENDIENTE','EN PROCESO','COMPLETADA','CANCELADA']);
-  document.getElementById('cnt-tareas').textContent = dTar.length;
-  document.getElementById('cnt-propiedades').textContent = dProp.length;
-  document.getElementById('cnt-clientes').textContent = dCli.length;
-}
-
-function renderStats(id, data, campo, estados){
-  const c = document.getElementById(id);
-  if(!c) return;
-  c.innerHTML = estados.map(e => {
-    const n = data.filter(i => i[campo]===e).length;
-    return `<div class="stat-card"><div class="stat-label">${e}</div><div class="stat-value">${n}</div></div>`;
-  }).join('');
-}
-
-// ── SORT ────────────────────────────────────────────────────────────────
-function sortTable(mod, col, th){
-  const s = sortState[mod];
-  if(s.col===col){ s.asc = !s.asc; } else { s.col=col; s.asc=true; }
-  document.querySelectorAll(`#mod-${mod} th`).forEach(t => t.classList.remove('sorted'));
-  th.classList.add('sorted');
-  th.querySelector('.sort-icon').textContent = s.asc ? '↑' : '↓';
-  if(mod==='tareas') renderTareas();
-  else if(mod==='propiedades') renderPropiedades();
-  else renderClientes();
-}
-
-function aplicarSort(arr, mod){
-  const s = sortState[mod];
-  if(!s.col) return arr;
-  return [...arr].sort((a,b)=>{
-    let va = a[s.col]||'', vb = b[s.col]||'';
-    const na = parseFloat(va), nb = parseFloat(vb);
-    if(!isNaN(na)&&!isNaN(nb)) return s.asc ? na-nb : nb-na;
-    return s.asc ? va.localeCompare(vb) : vb.localeCompare(va);
-  });
-}
-
-// ── RENDERS ────────────────────────────────────────────────────────────
-function renderTareas(){
-  const tb = document.getElementById('tblTareas');
-  const fF = document.getElementById('fTarFecha').value;
-  const fR = document.getElementById('fTarResp').value;
-  const fE = document.getElementById('fTarEst').value;
-  const q  = (document.getElementById('fTarSearch').value||'').toLowerCase();
-
-  let fil = dTar.filter(i =>
-    (!fF || (i.FECHA||'').includes(fF)) &&
-    (!fR || i.RESPONSABLE===fR) &&
-    (!fE || i.ESTADO===fE) &&
-    (!q  || Object.values(i).some(v => String(v).toLowerCase().includes(q)))
-  );
-  fil = aplicarSort(fil, 'tareas');
-
-  if(!fil.length){ tb.innerHTML = empty(6); return; }
-  tb.innerHTML = fil.map(i => {
-    const f = i.FECHA ? new Date(i.FECHA+'T12:00:00').toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-    return `<tr onclick='abrirTarea(false,${esc(i)})'>
-      <td style="white-space:nowrap"><small>${f}</small></td>
-      <td><strong>${i.CLIENTE||'—'}</strong></td>
-      <td class="td-truncate">${i.ACTIVIDAD||''}</td>
-      <td><small class="td-muted">${i.RESPONSABLE||''}</small></td>
-      <td><span class="badge ${color(i.ESTADO)}">${i.ESTADO||''}</span></td>
-      <td class="td-truncate td-muted">${i.NOTAS||''}</td>
-    </tr>`;
-  }).join('');
+  const r = await fetch(API+"?action=read_propiedades");
+  const j = await r.json();
+  dProp = j.data || [];
+  renderPropiedades();
 }
 
 function renderPropiedades(){
   const tb = document.getElementById('tblPropiedades');
-  const fN = document.getElementById('fProNeg').value;
-  const fT = document.getElementById('fProTipo').value;
-  const fE = document.getElementById('fProEst').value;
-  const fC = document.getElementById('fProCiudad').value;
-  const q  = (document.getElementById('fProSearch').value||'').toLowerCase();
 
-  let fil = dProp.filter(i =>
-    (!fN || i.NEGOCIO===fN) && (!fT || i.TIPO===fT) &&
-    (!fE || i.ESTADO===fE) && (!fC || i.CIUDAD===fC) &&
-    (!q  || Object.values(i).some(v => String(v).toLowerCase().includes(q)))
-  );
-  fil = aplicarSort(fil, 'propiedades');
-
-  if(!fil.length){ tb.innerHTML = empty(8); return; }
-  tb.innerHTML = fil.map(i => {
-    const precio = i.PRECIO ? new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(i.PRECIO) : '—';
-    const dest = i.DESTACADO==='SI' ? '<span class="badge-dest">★</span>' : '';
-    const loc = [i.CIUDAD, i.LOCALIDAD].filter(Boolean).join(', ');
-    return `<tr onclick='abrirPropiedad(false,${esc(i)})'>
-      <td><span class="td-muted" style="font-size:.65rem">${i.ID||''}</span></td>
-      <td><strong>${i.TITULO||''}</strong>${dest}</td>
-      <td><span class="badge ${color(i.NEGOCIO||'')} bg-proceso" style="font-size:.55rem">${i.NEGOCIO||''}</span></td>
-      <td><small class="td-muted">${i.TIPO||''}</small></td>
-      <td><small class="td-muted">${loc||'—'}</small></td>
-      <td class="price-cell">${precio}</td>
-      <td><small class="td-muted">${i.AREA ? i.AREA+' m²' : '—'}</small></td>
-      <td><span class="badge ${color(i.ESTADO)}">${i.ESTADO||''}</span></td>
-    </tr>`;
-  }).join('');
+  tb.innerHTML = dProp.map(i => `
+    <tr>
+      <td>${i.ID}</td>
+      <td>${i.TITULO}</td>
+      <td>${i.CIUDAD}</td>
+      <td>$ ${Number(i.PRECIO).toLocaleString()}</td>
+    </tr>
+  `).join('');
 }
 
-function renderClientes(){
-  const tb = document.getElementById('tblClientes');
-  const fT = document.getElementById('fCliTipo').value;
-  const fE = document.getElementById('fCliEst').value;
-  const q  = (document.getElementById('fCliSearch').value||'').toLowerCase();
-
-  let fil = dCli.filter(i =>
-    (!fT || i.TIPO_SERVICIO===fT) &&
-    (!fE || i.ESTADO_CLIENTE===fE) &&
-    (!q  || Object.values(i).some(v => String(v).toLowerCase().includes(q)))
-  );
-  fil = aplicarSort(fil, 'clientes');
-
-  if(!fil.length){ tb.innerHTML = empty(6); return; }
-  tb.innerHTML = fil.map(i => {
-    return `<tr onclick='abrirCliente(false,${esc(i)})'>
-      <td><strong>${i.NOMBRE||''}</strong></td>
-      <td><small class="td-muted">${i.CEDULA_NIT||''}</small></td>
-      <td>${i.TELEFONO||''}</td>
-      <td><small class="td-muted">${i.TIPO_SERVICIO||''}</small></td>
-      <td><span class="badge ${color(i.ESTADO_CLIENTE)}">${i.ESTADO_CLIENTE||''}</span></td>
-      <td class="td-truncate td-muted">${i.NOTAS||''}</td>
-    </tr>`;
-  }).join('');
+// ===================== PROYECTOS =====================
+async function cargarProyectos(){
+  const r = await fetch(API+"?action=read_proyectos");
+  const j = await r.json();
+  dProy = j.data || [];
+  renderProyectos();
 }
 
-function poblarCiudades(){
-  const sel = document.getElementById('fProCiudad');
-  const cur = sel.value;
-  const cids = [...new Set(dProp.map(p=>p.CIUDAD).filter(Boolean))].sort();
-  sel.innerHTML = '<option value="">Ciudad: Todas</option>';
-  cids.forEach(c => { const o=document.createElement('option'); o.value=c; o.text=c; sel.appendChild(o); });
-  sel.value = cur;
+function renderProyectos(){
+  const tb = document.getElementById('tblProyectos');
+
+  tb.innerHTML = dProy.map(i => `
+    <tr>
+      <td>${i.ID}</td>
+      <td>${i.TITULO}</td>
+      <td>${i.CIUDAD}</td>
+      <td>$ ${Number(i.PRECIO).toLocaleString()}</td>
+    </tr>
+  `).join('');
 }
 
-// ── MODALES — TAREAS ───────────────────────────────────────────────────
-function abrirTarea(esNuevo, item){
-  const m = document.getElementById('modalTarea');
-  m.style.display = 'block';
-  m.scrollTop = 0;
+// INIT
+cargarPropiedades();
 
-  // Poblar select clientes
-  const sel = document.getElementById('tarCliente');
-  sel.innerHTML = '<option value="">Seleccione cliente...</option>';
-  [...dCli].sort((a,b)=>(a.NOMBRE||'').localeCompare(b.NOMBRE||'')).forEach(c => {
-    const o=document.createElement('option'); o.value=c.NOMBRE; o.text=c.NOMBRE; sel.appendChild(o);
-  });
-
-  const chips = document.getElementById('tarChips');
-
-  if(esNuevo){
-    document.getElementById('titTarea').textContent = 'Nueva Tarea';
-    document.getElementById('tarModo').value = 'create';
-    document.getElementById('tarId').value = '';
-    chips.style.display = 'none'; chips.innerHTML = '';
-    sel.value=''; sel.disabled=false;
-    setField('tarActividad','',false); setField('tarResp','',false);
-    setField('tarFecha',hoy(),false);
-    document.getElementById('tarEstado').value='PENDIENTE';
-    document.getElementById('tarNotas').value='';
-    document.getElementById('divTarNotas').style.display='none';
-  } else {
-    document.getElementById('titTarea').textContent = item.CLIENTE||'Tarea';
-    document.getElementById('tarModo').value = 'edit';
-    document.getElementById('tarId').value = item.ID;
-    chips.style.display='flex';
-    chips.innerHTML = `
-      <div class="chip">Fecha: <strong>${item.FECHA ? new Date(item.FECHA+'T12:00:00').toLocaleDateString('es-CO') : '—'}</strong></div>
-      <div class="chip">Responsable: <strong>${item.RESPONSABLE||'—'}</strong></div>
-      <div class="chip">Actividad: <strong>${(item.ACTIVIDAD||'').substring(0,40)}</strong></div>
-    `;
-    sel.value=item.CLIENTE; sel.disabled=true;
-    setField('tarActividad', item.ACTIVIDAD, true);
-    setField('tarResp', item.RESPONSABLE, true);
-    setField('tarFecha', item.FECHA ? item.FECHA.split('T')[0] : hoy(), true);
-    document.getElementById('tarEstado').value = item.ESTADO||'PENDIENTE';
-    document.getElementById('tarNotas').value = item.NOTAS||'';
-    document.getElementById('divTarNotas').style.display='block';
-  }
-}
-
-// ── MODALES — PROPIEDADES ──────────────────────────────────────────────
-function abrirPropiedad(esNuevo, item){
-  const m = document.getElementById('modalPropiedad');
-  m.style.display = 'block';
-  m.scrollTop = 0;
-  document.getElementById('divFotos').style.display='none';
-  document.getElementById('fotosGrid').innerHTML='';
-  document.getElementById('videoLink').innerHTML='';
-
-  const soloLectura = ['proTitulo','proNegocio','proTipo','proPais','proDepartamento','proCiudad','proLocalidad','proArea','proAlcobas','proBanos','proEstrato','proPiso','proAno'];
-  const todos = ['proTitulo','proNegocio','proTipo','proEstado','proDestacado','proPais','proDepartamento','proCiudad','proLocalidad','proPrecio','proArea','proAlcobas','proBanos','proEstrato','proPiso','proAno','proAdmin','proGaraje','proInternas','proExternas','proDescripcion'];
-  const chips = document.getElementById('proChips');
-
-  if(esNuevo){
-    document.getElementById('titProp').textContent='Nueva Propiedad';
-    document.getElementById('proModo').value='create';
-    document.getElementById('proId').value='';
-    chips.style.display='none'; chips.innerHTML='';
-    todos.forEach(id => { const el=document.getElementById(id); if(el){el.value='';el.disabled=false;} });
-    document.getElementById('proPais').value='Colombia';
-    document.getElementById('proDepartamento').value='Risaralda';
-    document.getElementById('proCiudad').value='Pereira';
-    document.getElementById('proEstado').value='DISPONIBLE';
-    document.getElementById('proDestacado').value='NO';
-    ['proGaraje','proInternas','proExternas'].forEach(id=>document.getElementById(id).value='0');
-  } else {
-    document.getElementById('titProp').textContent = (item.ID||'Propiedad');
-    document.getElementById('proModo').value='edit';
-    document.getElementById('proId').value=item.ID||'';
-    chips.style.display='flex';
-    const precio = item.PRECIO ? new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(item.PRECIO) : '—';
-    chips.innerHTML = `
-      <div class="chip">Tipo: <strong>${item.TIPO||'—'}</strong></div>
-      <div class="chip">Negocio: <strong>${item.NEGOCIO||'—'}</strong></div>
-      <div class="chip">Ciudad: <strong>${item.CIUDAD||'—'}</strong></div>
-      <div class="chip">Precio actual: <strong>${precio}</strong></div>
-    `;
-    const mapa = {proTitulo:'TITULO',proNegocio:'NEGOCIO',proTipo:'TIPO',proEstado:'ESTADO',proDestacado:'DESTACADO',
-      proPais:'PAIS',proDepartamento:'DEPARTAMENTO',proCiudad:'CIUDAD',proLocalidad:'LOCALIDAD',
-      proPrecio:'PRECIO',proArea:'AREA',proAlcobas:'ALCOBAS',proBanos:'BANOS',proEstrato:'ESTRATO',
-      proPiso:'PISO',proAno:'ANO',proAdmin:'ADMIN',proGaraje:'GARAJE',proInternas:'INTERNAS',proExternas:'EXTERNAS',proDescripcion:'DESCRIPCION'};
-    for(const [elId,key] of Object.entries(mapa)){
-      const el=document.getElementById(elId); if(el) el.value=item[key]||'';
-    }
-    todos.forEach(id => { const el=document.getElementById(id); if(el) el.disabled=soloLectura.includes(id); });
-
-    // Fotos
-    const fotos=[];
-    for(let i=1;i<=10;i++){ const u=item['FOTO'+i]; if(u&&u.trim()) fotos.push(u.trim()); }
-    if(fotos.length>0||(item.VIDEO&&item.VIDEO.trim())){
-      document.getElementById('divFotos').style.display='block';
-      const grid=document.getElementById('fotosGrid');
-      fotos.forEach(url=>{
-        const img=document.createElement('img');
-        img.src=url; img.className='foto-thumb';
-        img.onclick=()=>window.open(url,'_blank');
-        img.onerror=()=>img.style.display='none';
-        grid.appendChild(img);
-      });
-      if(item.VIDEO&&item.VIDEO.trim())
-        document.getElementById('videoLink').innerHTML=`<a href="${item.VIDEO.trim()}" target="_blank" class="video-link">▶ Ver video</a>`;
-    }
-  }
-}
-
-// ── MODALES — CLIENTES ─────────────────────────────────────────────────
-function abrirCliente(esNuevo, item){
-  const m = document.getElementById('modalCliente');
-  m.style.display = 'block';
-  m.scrollTop = 0;
-  const campos = ['cliNom','cliCed','cliTel','cliCor','cliDir','cliPre','cliTipo'];
-  const chips = document.getElementById('cliChips');
-
-  if(esNuevo){
-    document.getElementById('titCli').textContent='Nuevo Cliente';
-    document.getElementById('cliModo').value='create';
-    document.getElementById('cliId').value='';
-    chips.style.display='none'; chips.innerHTML='';
-    campos.forEach(id=>{const el=document.getElementById(id);el.value='';el.disabled=false;});
-    document.getElementById('cliEst').value='PENDIENTE';
-    document.getElementById('cliNotas').value='';
-    document.getElementById('divCliNotas').style.display='none';
-  } else {
-    document.getElementById('titCli').textContent=item.NOMBRE||'Cliente';
-    document.getElementById('cliModo').value='edit';
-    document.getElementById('cliId').value=item.ID_CLIENTE;
-    chips.style.display='flex';
-    chips.innerHTML=`
-      <div class="chip">Tel: <strong>${item.TELEFONO||'—'}</strong></div>
-      <div class="chip">Presupuesto: <strong>${item.PRESUPUESTO||'—'}</strong></div>
-      <div class="chip">Tipo: <strong>${item.TIPO_SERVICIO||'—'}</strong></div>
-    `;
-    document.getElementById('cliNom').value=item.NOMBRE||'';
-    document.getElementById('cliCed').value=item.CEDULA_NIT||'';
-    document.getElementById('cliTel').value=item.TELEFONO||'';
-    document.getElementById('cliCor').value=item.CORREO||'';
-    document.getElementById('cliDir').value=item.DIRECCION||'';
-    document.getElementById('cliPre').value=item.PRESUPUESTO||'';
-    document.getElementById('cliTipo').value=item.TIPO_SERVICIO||'VENTA';
-    document.getElementById('cliEst').value=item.ESTADO_CLIENTE||'PENDIENTE';
-    document.getElementById('cliNotas').value=item.NOTAS||'';
-    campos.forEach(id=>document.getElementById(id).disabled=true);
-    document.getElementById('divCliNotas').style.display='block';
-  }
-}
-
-// ── GUARDAR ────────────────────────────────────────────────────────────
-async function guardarTarea(){
-  const modo=document.getElementById('tarModo').value;
-  const btn=document.getElementById('btnTar');
-  if(modo==='create'){
-    if(!document.getElementById('tarCliente').value){ toast('Seleccione un cliente','error'); return; }
-    if(!document.getElementById('tarActividad').value){ toast('Describa la actividad','error'); return; }
-  }
-  const payload = modo==='create' ? {
-    action:'create_tarea',
-    cliente:     document.getElementById('tarCliente').value,
-    actividad:   document.getElementById('tarActividad').value,
-    responsable: document.getElementById('tarResp').value,
-    fecha:       document.getElementById('tarFecha').value,
-    estado:      document.getElementById('tarEstado').value
-  } : {
-    action:'update_tarea',
-    id:     document.getElementById('tarId').value,
-    estado: document.getElementById('tarEstado').value,
-    notas:  document.getElementById('tarNotas').value
-  };
-  await enviar(payload, btn, 'Guardar Tarea', cargarTareas);
-}
-
-async function guardarPropiedad(){
-  const modo=document.getElementById('proModo').value;
-  const btn=document.getElementById('btnPro');
-  if(modo==='create' && !document.getElementById('proTitulo').value){ toast('Ingrese el título','error'); return; }
-  const payload = modo==='create' ? {
-    action:'create_propiedad',
-    titulo:document.getElementById('proTitulo').value, negocio:document.getElementById('proNegocio').value,
-    tipo:document.getElementById('proTipo').value, estado:document.getElementById('proEstado').value,
-    destacado:document.getElementById('proDestacado').value, pais:document.getElementById('proPais').value,
-    departamento:document.getElementById('proDepartamento').value, ciudad:document.getElementById('proCiudad').value,
-    localidad:document.getElementById('proLocalidad').value, precio:document.getElementById('proPrecio').value,
-    area:document.getElementById('proArea').value, alcobas:document.getElementById('proAlcobas').value,
-    banos:document.getElementById('proBanos').value, estrato:document.getElementById('proEstrato').value,
-    piso:document.getElementById('proPiso').value, ano:document.getElementById('proAno').value,
-    admin:document.getElementById('proAdmin').value, garaje:document.getElementById('proGaraje').value,
-    internas:document.getElementById('proInternas').value, externas:document.getElementById('proExternas').value,
-    descripcion:document.getElementById('proDescripcion').value
-  } : {
-    action:'update_propiedad', id:document.getElementById('proId').value,
-    estado:document.getElementById('proEstado').value, precio:document.getElementById('proPrecio').value,
-    admin:document.getElementById('proAdmin').value, garaje:document.getElementById('proGaraje').value,
-    internas:document.getElementById('proInternas').value, externas:document.getElementById('proExternas').value,
-    destacado:document.getElementById('proDestacado').value, descripcion:document.getElementById('proDescripcion').value
-  };
-  await enviar(payload, btn, 'Guardar Propiedad', cargarPropiedades);
-}
-
-async function guardarCliente(){
-  const modo=document.getElementById('cliModo').value;
-  const btn=document.getElementById('btnCli');
-  if(modo==='create' && !document.getElementById('cliNom').value){ toast('Ingrese el nombre','error'); return; }
-  const payload = modo==='create' ? {
-    action:'create_cliente', nombre:document.getElementById('cliNom').value,
-    cedula:document.getElementById('cliCed').value, telefono:document.getElementById('cliTel').value,
-    correo:document.getElementById('cliCor').value, direccion:document.getElementById('cliDir').value,
-    presupuesto:document.getElementById('cliPre').value, tipo:document.getElementById('cliTipo').value,
-    estado:document.getElementById('cliEst').value
-  } : {
-    action:'update_cliente', id:document.getElementById('cliId').value,
-    estado:document.getElementById('cliEst').value, notas:document.getElementById('cliNotas').value
-  };
-  await enviar(payload, btn, 'Guardar Cliente', ()=>{ cargarClientes(); cargarTareas(); });
-}
-
-async function enviar(payload, btn, label, cb){
-  btn.disabled=true; btn.textContent='Guardando...';
-  try {
-    const r = await fetch(API, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const j = await r.json();
-    if(j.status==='success'){
-      toast('✓ Guardado exitosamente','success');
-      cerrar();
-      if(cb) await cb();
-    } else {
-      toast('Error: ' + (j.message||'Respuesta inesperada'),'error');
-    }
-  } catch(e){
-    toast('Error de conexión: ' + e.message,'error');
-  }
-  btn.disabled=false; btn.textContent=label;
-}
-
-// ── UTILS ──────────────────────────────────────────────────────────────
-function cerrar(){ document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); }
-function clickFuera(e,id){ if(e.target.id===id) cerrar(); }
-function setField(id, val, disabled){
-  const el=document.getElementById(id); if(!el) return;
-  el.value=val; el.disabled=disabled;
-}
-function esc(obj){ return JSON.stringify(obj).replace(/"/g,'&quot;'); }
-function empty(cols){
-  return `<tr><td colspan="${cols}"><div class="empty-state"><span class="empty-icon">◇</span><div class="empty-text">Sin registros disponibles</div></div></td></tr>`;
-}
-function color(e){
-  if(!e) return '';
-  const map = {
-    'PENDIENTE':'bg-pendiente','EN PROCESO':'bg-proceso','COMPLETADA':'bg-completada','CANCELADA':'bg-cancelada',
-    'DISPONIBLE':'bg-disponible','VENDIDO':'bg-vendido','ARRENDADO':'bg-arrendado','SEPARADO':'bg-separado','INACTIVO':'bg-inactivo'
-  };
-  return map[e]||'';
-}
-
-let _toastTimer;
-function toast(msg, tipo='success'){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className=''; 
-  void t.offsetWidth;
-  t.className=tipo+' show';
-  clearTimeout(_toastTimer);
-  _toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
-}
 </script>
+
 </body>
 </html>
