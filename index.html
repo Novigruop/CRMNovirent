@@ -5,12 +5,7 @@
 <title>Novigroup CRM</title>
 
 <style>
-body{
-background:#0a0a0a;
-color:#ddd;
-font-family:Arial;
-margin:0;
-}
+body{background:#0a0a0a;color:#ddd;font-family:Arial;margin:0}
 
 header{
 text-align:center;
@@ -19,7 +14,6 @@ color:#C9A84C;
 font-size:30px;
 }
 
-/* NAV */
 .tabs{
 display:flex;
 justify-content:center;
@@ -38,14 +32,12 @@ color:#C9A84C;
 border-bottom:2px solid #C9A84C;
 }
 
-/* CONTENEDOR */
 .container{
 padding:20px;
 max-width:1100px;
 margin:auto;
 }
 
-/* FILTROS */
 .filtros{
 display:flex;
 gap:10px;
@@ -57,15 +49,6 @@ border:1px solid #222;
 margin-bottom:20px;
 }
 
-.filtros select{
-background:#1a1a1a;
-border:1px solid #333;
-color:white;
-padding:8px;
-border-radius:6px;
-}
-
-/* BOTÓN */
 .btn{
 background:#C9A84C;
 color:black;
@@ -76,7 +59,6 @@ cursor:pointer;
 font-weight:bold;
 }
 
-/* TABLA */
 .table-box{
 background:#111;
 border-radius:10px;
@@ -89,14 +71,9 @@ width:100%;
 border-collapse:collapse;
 }
 
-thead{
-background:#0f0f0f;
-}
-
 th{
 color:#C9A84C;
 font-size:12px;
-letter-spacing:1px;
 padding:14px;
 text-align:left;
 }
@@ -112,7 +89,6 @@ padding:40px;
 color:#777;
 }
 
-/* MODAL */
 .modal{
 position:fixed;
 top:0;left:0;
@@ -131,12 +107,10 @@ display:flex;
 background:#111;
 padding:20px;
 border-radius:10px;
-width:700px;
-max-height:90vh;
-overflow:auto;
+width:500px;
 }
 
-input,select{
+input{
 width:100%;
 margin-bottom:10px;
 padding:8px;
@@ -152,60 +126,20 @@ color:white;
 <header>NOVIGROUP CRM</header>
 
 <div class="tabs">
-<button class="active">PROPIEDADES</button>
+<button class="active" onclick="tab('propiedades',this)">PROPIEDADES</button>
+<button onclick="tab('proyectos',this)">PROYECTOS</button>
 </div>
 
 <div class="container">
 
-<!-- FILTROS -->
 <div class="filtros">
-
-<button class="btn" onclick="abrirModal()">+ NUEVA PROPIEDAD</button>
-
-<span>| FILTROS:</span>
-
-<select id="fNegocio" onchange="cargar()">
-<option value="">Negocio: Todos</option>
-<option>VENTA</option>
-<option>RENTA</option>
-</select>
-
-<select id="fTipo" onchange="cargar()">
-<option value="">Tipo: Todos</option>
-<option>CASA</option>
-<option>APARTAMENTO</option>
-<option>LOTE</option>
-</select>
-
-<select id="fEstado" onchange="cargar()">
-<option value="">Estado: Todos</option>
-<option>DISPONIBLE</option>
-<option>VENDIDO</option>
-</select>
-
-<select id="fCiudad" onchange="cargar()">
-<option value="">Ciudad: Todas</option>
-</select>
-
+<button class="btn" onclick="abrirModal()">+ NUEVO</button>
 </div>
 
-<!-- TABLA -->
 <div class="table-box">
 <table>
 
-<thead>
-<tr>
-<th>ID</th>
-<th>TÍTULO</th>
-<th>NEGOCIO</th>
-<th>TIPO</th>
-<th>CIUDAD</th>
-<th>PRECIO</th>
-<th>ÁREA</th>
-<th>ESTADO</th>
-</tr>
-</thead>
-
+<thead id="thead"></thead>
 <tbody id="tabla"></tbody>
 
 </table>
@@ -217,12 +151,12 @@ color:white;
 <div id="modal" class="modal">
 <div class="box" onclick="event.stopPropagation()">
 
-<h3 style="color:#C9A84C">Nueva Propiedad</h3>
+<h3 style="color:#C9A84C">Nuevo Registro</h3>
 
 <input id="TITULO" placeholder="Título">
 <input id="CIUDAD" placeholder="Ciudad">
-<input id="TIPO" placeholder="Tipo">
 <input id="NEGOCIO" placeholder="Negocio">
+<input id="TIPO" placeholder="Tipo">
 <input id="PRECIO" placeholder="Precio">
 <input id="AREA" placeholder="Área">
 <input id="ESTADO" placeholder="Estado">
@@ -236,13 +170,26 @@ color:white;
 
 const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
 
+let modulo = "propiedades";
+
+// CAMBIAR TAB
+function tab(m,b){
+modulo = m;
+document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
+cargar();
+}
+
+// MODAL
 function abrirModal(){ modal.classList.add("active"); }
 modal.addEventListener("click",()=>modal.classList.remove("active"));
 
 // GUARDAR
 async function guardar(){
 
-let data = { action:"crear_propiedades" };
+let data = {
+action: "create_"+modulo
+};
 
 document.querySelectorAll("#modal input").forEach(el=>{
 data[el.id.toLowerCase()] = el.value;
@@ -260,35 +207,28 @@ cargar();
 // CARGAR
 async function cargar(){
 
-const r = await fetch(API+"?action=read_propiedades");
+const r = await fetch(API+"?action=read_"+modulo);
 const j = await r.json();
 
-let data = j.data || [];
-
-if(data.length === 0){
-tabla.innerHTML = `<tr><td colspan="8" class="empty">Sin propiedades</td></tr>`;
+if(!j.data || j.data.length===0){
+tabla.innerHTML = `<tr><td class="empty">Sin datos</td></tr>`;
 return;
 }
 
-// FILTROS
-const neg = fNegocio.value;
-const tipo = fTipo.value;
-const est = fEstado.value;
-const ciudad = fCiudad.value;
+thead.innerHTML = `
+<tr>
+<th>ID</th>
+<th>TÍTULO</th>
+<th>NEGOCIO</th>
+<th>TIPO</th>
+<th>CIUDAD</th>
+<th>PRECIO</th>
+<th>ÁREA</th>
+<th>ESTADO</th>
+</tr>
+`;
 
-data = data.filter(p =>
-(!neg || p.NEGOCIO==neg) &&
-(!tipo || p.TIPO==tipo) &&
-(!est || p.ESTADO==est) &&
-(!ciudad || p.CIUDAD==ciudad)
-);
-
-// llenar ciudades
-const ciudades = [...new Set(j.data.map(x=>x.CIUDAD))];
-fCiudad.innerHTML = `<option value="">Ciudad: Todas</option>` +
-ciudades.map(c=>`<option>${c}</option>`).join("");
-
-tabla.innerHTML = data.map(p=>`
+tabla.innerHTML = j.data.map(p=>`
 <tr>
 <td>${p.ID||""}</td>
 <td>${p.TITULO||""}</td>
