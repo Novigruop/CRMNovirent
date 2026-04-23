@@ -6,53 +6,26 @@
 <title>Novigroup CRM</title>
 
 <style>
-body {
-  margin:0;
-  font-family: Arial;
-  background:#0a0a0a;
-  color:white;
-}
+body{margin:0;font-family:Arial;background:#0a0a0a;color:#fff}
+header{padding:25px;text-align:center;color:#C9A84C;font-size:26px}
+.tabs{display:flex;justify-content:center;gap:20px;border-bottom:1px solid #222}
+.tabs button{background:none;border:none;color:#aaa;padding:12px;cursor:pointer}
+.tabs button.active{color:#C9A84C;border-bottom:2px solid #C9A84C}
 
-header{
-  text-align:center;
-  padding:20px;
-  font-size:28px;
-  color:#C9A84C;
-}
+.module{display:none;padding:20px}
+.module.active{display:block}
 
-.tabs{
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  border-bottom:1px solid #222;
-}
+.toolbar{display:flex;gap:10px;margin-bottom:15px}
+.btn{background:#C9A84C;border:none;color:#000;padding:8px 12px;border-radius:6px;cursor:pointer}
 
-.tabs button{
-  background:none;
-  border:none;
-  color:#aaa;
-  padding:10px;
-  cursor:pointer;
-}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #222;text-align:left}
 
-.tabs button.active{
-  color:#C9A84C;
-  border-bottom:2px solid #C9A84C;
-}
-
-.container{
-  padding:20px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th, td{
-  padding:10px;
-  border-bottom:1px solid #222;
-  text-align:left;
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:#000c;display:none;align-items:center;justify-content:center}
+.modal.active{display:flex}
+.modal-box{background:#111;padding:20px;border-radius:10px;width:300px}
+.modal-box input, .modal-box textarea{
+  width:100%;margin-bottom:10px;padding:8px;border-radius:5px;border:1px solid #333;background:#1a1a1a;color:#fff
 }
 </style>
 </head>
@@ -62,101 +35,124 @@ th, td{
 <header>NOVIGROUP CRM</header>
 
 <div class="tabs">
-  <button onclick="mostrarModulo('tareas', this)" class="active">TAREAS</button>
-  <button onclick="mostrarModulo('propiedades', this)">PROPIEDADES</button>
-  <button onclick="mostrarModulo('proyectos', this)">PROYECTOS 🔥</button>
-  <button onclick="mostrarModulo('clientes', this)">CLIENTES</button>
+  <button onclick="verModulo('tareas',this)" class="active">TAREAS</button>
+  <button onclick="verModulo('propiedades',this)">PROPIEDADES</button>
+  <button onclick="verModulo('proyectos',this)">PROYECTOS 🔥</button>
+  <button onclick="verModulo('clientes',this)">CLIENTES</button>
 </div>
 
-<div class="container">
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>TITULO</th>
-        <th>CIUDAD</th>
-        <th>PRECIO</th>
-      </tr>
-    </thead>
-    <tbody id="tabla"></tbody>
-  </table>
+<!-- TAREAS -->
+<div id="mod-tareas" class="module active">
+  <div class="toolbar"><button class="btn" onclick="abrirModal('tarea')">+ Nueva</button></div>
+  <table><tbody id="tblTareas"></tbody></table>
+</div>
+
+<!-- PROPIEDADES -->
+<div id="mod-propiedades" class="module">
+  <div class="toolbar"><button class="btn" onclick="abrirModal('propiedad')">+ Nueva</button></div>
+  <table><tbody id="tblPropiedades"></tbody></table>
+</div>
+
+<!-- PROYECTOS -->
+<div id="mod-proyectos" class="module">
+  <div class="toolbar"><button class="btn" onclick="abrirModal('proyecto')">+ Nuevo</button></div>
+  <table><tbody id="tblProyectos"></tbody></table>
+</div>
+
+<!-- CLIENTES -->
+<div id="mod-clientes" class="module">
+  <div class="toolbar"><button class="btn" onclick="abrirModal('cliente')">+ Nuevo</button></div>
+  <table><tbody id="tblClientes"></tbody></table>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <h3 id="modalTitle"></h3>
+    <input id="titulo" placeholder="Título / Nombre">
+    <input id="ciudad" placeholder="Ciudad">
+    <input id="precio" placeholder="Precio">
+    <textarea id="descripcion" placeholder="Descripción"></textarea>
+    <input id="imagen" placeholder="URL Imagen">
+    <button class="btn" onclick="guardar()">Guardar</button>
+  </div>
 </div>
 
 <script>
 
-const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
+const API = "/api/data";
+let tipoActual = "";
 
-// ===================== DATA =====================
-let dataProyectos = [];
-
-// ===================== NAVEGACIÓN =====================
-function mostrarModulo(modulo, btn){
-
+// NAV
+function verModulo(mod,btn){
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
 
-  if(modulo === "propiedades") cargarPropiedades();
-  if(modulo === "proyectos") cargarProyectos();
-  if(modulo === "clientes") cargarClientes();
-  if(modulo === "tareas") cargarTareas();
+  document.querySelectorAll(".module").forEach(m=>m.classList.remove("active"));
+  document.getElementById("mod-"+mod).classList.add("active");
+
+  if(mod==="tareas") cargar("read_tareas","tblTareas");
+  if(mod==="propiedades") cargar("read_propiedades","tblPropiedades");
+  if(mod==="proyectos") cargar("read_proyectos","tblProyectos");
+  if(mod==="clientes") cargar("read_clientes","tblClientes");
 }
 
-// ===================== PROPIEDADES =====================
-async function cargarPropiedades(){
-  const res = await fetch(API + "?action=read_propiedades");
-  const json = await res.json();
-  renderTabla(json.data);
-}
+// FETCH GENERAL
+async function cargar(action,tabla){
+  const r = await fetch(API+"?action="+action);
+  const j = await r.json();
 
-// ===================== PROYECTOS 🔥 =====================
-async function cargarProyectos(){
-  const res = await fetch(API + "?action=read_proyectos");
-  const json = await res.json();
+  const tb = document.getElementById(tabla);
 
-  dataProyectos = json.data || [];
-  renderTabla(dataProyectos);
-}
-
-// ===================== CLIENTES =====================
-async function cargarClientes(){
-  const res = await fetch(API + "?action=read_clientes");
-  const json = await res.json();
-  renderTabla(json.data);
-}
-
-// ===================== TAREAS =====================
-async function cargarTareas(){
-  const res = await fetch(API + "?action=read_tareas");
-  const json = await res.json();
-  renderTabla(json.data);
-}
-
-// ===================== RENDER =====================
-function renderTabla(data){
-
-  const tabla = document.getElementById("tabla");
-  tabla.innerHTML = "";
-
-  if(!data || data.length === 0){
-    tabla.innerHTML = "<tr><td colspan='4'>Sin datos</td></tr>";
+  if(!j.data || j.data.length===0){
+    tb.innerHTML="<tr><td>Sin datos</td></tr>";
     return;
   }
 
-  data.forEach(p => {
-    tabla.innerHTML += `
-      <tr>
-        <td>${p.ID || "-"}</td>
-        <td>${p.TITULO || p.NOMBRE || "-"}</td>
-        <td>${p.CIUDAD || "-"}</td>
-        <td>$ ${p.PRECIO ? Number(p.PRECIO).toLocaleString() : "-"}</td>
-      </tr>
-    `;
+  tb.innerHTML = j.data.map(x=>`
+    <tr>
+      <td>${x.ID||""}</td>
+      <td>${x.TITULO||x.NOMBRE||""}</td>
+      <td>${x.CIUDAD||""}</td>
+      <td>$ ${Number(x.PRECIO||0).toLocaleString()}</td>
+    </tr>
+  `).join("");
+}
+
+// MODAL
+function abrirModal(tipo){
+  tipoActual = tipo;
+  document.getElementById("modal").classList.add("active");
+  document.getElementById("modalTitle").innerText = "Nuevo "+tipo;
+}
+
+function cerrarModal(){
+  document.getElementById("modal").classList.remove("active");
+}
+
+// GUARDAR
+async function guardar(){
+
+  const data = {
+    action: tipoActual === "proyecto" ? "crear_proyecto" : "crear_"+tipoActual,
+    titulo: document.getElementById("titulo").value,
+    ciudad: document.getElementById("ciudad").value,
+    precio: document.getElementById("precio").value,
+    descripcion: document.getElementById("descripcion").value,
+    imagen: document.getElementById("imagen").value
+  };
+
+  await fetch(API,{
+    method:"POST",
+    body:JSON.stringify(data)
   });
 
+  cerrarModal();
+  verModulo(tipoActual+"s", document.querySelector(`button[onclick*="${tipoActual}"]`));
 }
 
 // INIT
-cargarTareas();
+cargar("read_tareas","tblTareas");
 
 </script>
 
