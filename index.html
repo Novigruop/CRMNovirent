@@ -5,26 +5,102 @@
 <title>Novigroup CRM</title>
 
 <style>
-body{background:#0a0a0a;color:white;font-family:Arial;margin:0}
-header{text-align:center;padding:20px;color:#C9A84C;font-size:28px}
+body{
+background:#0a0a0a;
+color:white;
+font-family:Arial;
+margin:0;
+}
 
-.tabs{display:flex;justify-content:center;gap:20px;border-bottom:1px solid #222}
-.tabs button{background:none;border:none;color:#aaa;padding:12px;cursor:pointer}
-.tabs button.active{color:#C9A84C;border-bottom:2px solid #C9A84C}
+header{
+text-align:center;
+padding:20px;
+font-size:32px;
+color:#C9A84C;
+}
 
-.module{display:none;padding:20px}
-.module.active{display:block}
+.btn{
+background:#C9A84C;
+color:black;
+border:none;
+padding:10px 15px;
+border-radius:6px;
+cursor:pointer;
+}
 
-.btn{background:#C9A84C;color:black;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;margin-bottom:10px}
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
 
-table{width:100%;border-collapse:collapse}
-td,th{padding:10px;border-bottom:1px solid #222}
+td,th{
+padding:10px;
+border-bottom:1px solid #222;
+}
 
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:#000c;display:none;justify-content:center;align-items:center}
-.modal.active{display:flex}
+/* MODAL */
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+display:none;
+justify-content:center;
+align-items:center;
+}
 
-.box{background:#111;padding:20px;border-radius:10px;width:300px}
-input,textarea{width:100%;margin:5px 0;padding:8px;background:#222;border:none;color:white}
+.modal.active{display:flex;}
+
+.modal-box{
+background:#111;
+padding:25px;
+border-radius:12px;
+width:700px;
+max-height:90vh;
+overflow:auto;
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+}
+
+.close{
+cursor:pointer;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+label{
+font-size:12px;
+color:#C9A84C;
+}
+
+input,select,textarea{
+background:#1a1a1a;
+border:1px solid #333;
+padding:8px;
+color:white;
+border-radius:6px;
+}
+
+textarea{
+grid-column:span 2;
+height:100px;
+}
+
+.save{
+margin-top:15px;
+width:100%;
+}
 </style>
 </head>
 
@@ -32,108 +108,173 @@ input,textarea{width:100%;margin:5px 0;padding:8px;background:#222;border:none;c
 
 <header>NOVIGROUP CRM</header>
 
-<div class="tabs">
-<button onclick="tab('tareas',this)" class="active">TAREAS</button>
-<button onclick="tab('propiedades',this)">PROPIEDADES</button>
-<button onclick="tab('proyectos',this)">PROYECTOS 🔥</button>
-<button onclick="tab('clientes',this)">CLIENTES</button>
+<div style="padding:20px">
+<button class="btn" onclick="abrirModal()">+ NUEVA PROPIEDAD</button>
+
+<table id="tabla"></table>
 </div>
 
-<div id="tareas" class="module active">
-<button class="btn" onclick="modal('tarea')">+ Nueva</button>
-<table id="tTareas"></table>
-</div>
-
-<div id="propiedades" class="module">
-<button class="btn" onclick="modal('propiedad')">+ Nueva</button>
-<table id="tProp"></table>
-</div>
-
-<div id="proyectos" class="module">
-<button class="btn" onclick="modal('proyecto')">+ Nuevo</button>
-<table id="tProy"></table>
-</div>
-
-<div id="clientes" class="module">
-<button class="btn" onclick="modal('cliente')">+ Nuevo</button>
-<table id="tCli"></table>
-</div>
-
+<!-- MODAL -->
 <div id="modal" class="modal">
-<div class="box">
-<h3 id="title"></h3>
-<input id="f1" placeholder="Nombre / Título">
-<input id="f2" placeholder="Ciudad">
-<input id="f3" placeholder="Precio">
-<textarea id="f4" placeholder="Descripción"></textarea>
-<button class="btn" onclick="guardar()">Guardar</button>
+
+<div class="modal-box" onclick="event.stopPropagation()">
+
+<div class="modal-header">
+<h2>Nueva Propiedad</h2>
+<span class="close" onclick="cerrarModal()">✕</span>
+</div>
+
+<div class="grid">
+
+<label>Título</label>
+<input id="titulo">
+
+<label>Tipo Negocio</label>
+<select id="negocio">
+<option>VENTA</option>
+<option>RENTA</option>
+</select>
+
+<label>Tipo Inmueble</label>
+<select id="tipo">
+<option>CASA</option>
+<option>APARTAMENTO</option>
+<option>LOTE</option>
+</select>
+
+<label>Estado</label>
+<select id="estado">
+<option>DISPONIBLE</option>
+<option>VENDIDO</option>
+</select>
+
+<label>Ciudad</label>
+<input id="ciudad">
+
+<label>Localidad</label>
+<input id="localidad">
+
+<label>Precio</label>
+<input id="precio">
+
+<label>Área</label>
+<input id="area">
+
+<label>Alcobas</label>
+<input id="alcobas">
+
+<label>Baños</label>
+<input id="banos">
+
+<label>País</label>
+<input id="pais" value="Colombia">
+
+<label>Departamento</label>
+<input id="departamento">
+
+<label>Garaje</label>
+<input id="garaje">
+
+<label>Estrato</label>
+<input id="estrato">
+
+<label>Pisos</label>
+<input id="pisos">
+
+<label>Año</label>
+<input id="ano">
+
+<label>Admin</label>
+<input id="admin">
+
+<label>Internas</label>
+<input id="internas">
+
+<label>Externas</label>
+<input id="externas">
+
+<label>Destacado</label>
+<select id="destacado">
+<option>SI</option>
+<option>NO</option>
+</select>
+
+<label>Descripción</label>
+<textarea id="descripcion"></textarea>
+
+</div>
+
+<button class="btn save" onclick="guardar()">GUARDAR PROPIEDAD</button>
+
 </div>
 </div>
 
 <script>
 
-const API = "/api/data";
-let tipo="";
+const API = "TU_URL_DE_APPS_SCRIPT_AQUI";
 
-// tabs
-function tab(t,b){
-document.querySelectorAll(".module").forEach(m=>m.classList.remove("active"))
-document.getElementById(t).classList.add("active")
-document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"))
-b.classList.add("active")
-
-load(t)
+// abrir / cerrar
+function abrirModal(){
+document.getElementById("modal").classList.add("active");
 }
 
-// load data
-async function load(t){
-const r = await fetch(API+"?action=read_"+t)
-const j = await r.json()
-
-const id = {
-tareas:"tTareas",
-clientes:"tCli",
-propiedades:"tProp",
-proyectos:"tProy"
-}[t]
-
-document.getElementById(id).innerHTML = j.data.map(x=>`
-<tr>
-<td>${x.ID||""}</td>
-<td>${x.TITULO||x.NOMBRE||""}</td>
-<td>${x.CIUDAD||""}</td>
-<td>${x.PRECIO||""}</td>
-</tr>
-`).join("")
+function cerrarModal(){
+document.getElementById("modal").classList.remove("active");
 }
 
-// modal
-function modal(t){
-tipo=t
-document.getElementById("modal").classList.add("active")
-document.getElementById("title").innerText="Nuevo "+t
-}
+// cerrar al hacer click afuera
+document.getElementById("modal").addEventListener("click",cerrarModal);
 
+// guardar
 async function guardar(){
 
 await fetch(API,{
 method:"POST",
 body:JSON.stringify({
-action:"crear_"+tipo,
-titulo:f1.value,
-nombre:f1.value,
-ciudad:f2.value,
-precio:f3.value,
-descripcion:f4.value
+action:"crear_propiedad",
+titulo:titulo.value,
+ciudad:ciudad.value,
+localidad:localidad.value,
+tipo:tipo.value,
+negocio:negocio.value,
+alcobas:alcobas.value,
+banos:banos.value,
+pais:pais.value,
+departamento:departamento.value,
+estado:estado.value,
+garaje:garaje.value,
+estrato:estrato.value,
+pisos:pisos.value,
+ano:ano.value,
+admin:admin.value,
+internas:internas.value,
+externas:externas.value,
+destacado:destacado.value,
+precio:precio.value,
+area:area.value
 })
 })
 
-document.getElementById("modal").classList.remove("active")
-load(tipo+"s")
+cerrarModal();
+load();
 }
 
-// init
-load("tareas")
+// cargar tabla
+async function load(){
+const r = await fetch(API+"?action=read_propiedades");
+const j = await r.json();
+
+tabla.innerHTML = j.data.map(x=>`
+<tr>
+<td>${x.TITULO}</td>
+<td>${x.CIUDAD}</td>
+<td>$ ${x.PRECIO}</td>
+<td>${x.ESTADO}</td>
+</tr>
+`).join("");
+}
+
+load();
 
 </script>
 
