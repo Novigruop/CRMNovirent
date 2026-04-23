@@ -3,19 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOVIGROUP CRM</title>
+<title>Novigroup CRM</title>
 
 <style>
-body{font-family:Arial;background:#0a0a0a;color:#fff;margin:0}
-header{padding:15px;background:#111;color:#C9A84C;font-weight:bold}
-.tabs{display:flex;background:#000;border-bottom:1px solid #333}
-.tab-btn{flex:1;padding:12px;border:none;background:none;color:#aaa;cursor:pointer}
-.tab-btn.active{color:#C9A84C;border-bottom:2px solid #C9A84C}
-.container{padding:20px}
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid #222}
-.btn{background:#C9A84C;color:#000;padding:8px 15px;border:none;cursor:pointer}
+body {
+  margin:0;
+  font-family: Arial;
+  background:#0a0a0a;
+  color:white;
+}
+
+header{
+  text-align:center;
+  padding:20px;
+  font-size:28px;
+  color:#C9A84C;
+}
+
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  border-bottom:1px solid #222;
+}
+
+.tabs button{
+  background:none;
+  border:none;
+  color:#aaa;
+  padding:10px;
+  cursor:pointer;
+}
+
+.tabs button.active{
+  color:#C9A84C;
+  border-bottom:2px solid #C9A84C;
+}
+
+.container{
+  padding:20px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td{
+  padding:10px;
+  border-bottom:1px solid #222;
+  text-align:left;
+}
 </style>
 </head>
 
@@ -23,106 +61,102 @@ th,td{padding:10px;border-bottom:1px solid #222}
 
 <header>NOVIGROUP CRM</header>
 
-<nav class="tabs">
-  <button class="tab-btn active" onclick="verModulo('propiedades',this)">Propiedades</button>
-  <button class="tab-btn" onclick="verModulo('proyectos',this)">Proyectos</button>
-</nav>
-
-<!-- PROPIEDADES -->
-<div id="mod-propiedades" class="container module active">
-  <button class="btn" onclick="cargarPropiedades()">Actualizar</button>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Título</th>
-          <th>Ciudad</th>
-          <th>Precio</th>
-        </tr>
-      </thead>
-      <tbody id="tblPropiedades"></tbody>
-    </table>
-  </div>
+<div class="tabs">
+  <button onclick="mostrarModulo('tareas', this)" class="active">TAREAS</button>
+  <button onclick="mostrarModulo('propiedades', this)">PROPIEDADES</button>
+  <button onclick="mostrarModulo('proyectos', this)">PROYECTOS 🔥</button>
+  <button onclick="mostrarModulo('clientes', this)">CLIENTES</button>
 </div>
 
-<!-- PROYECTOS -->
-<div id="mod-proyectos" class="container module">
-  <button class="btn" onclick="cargarProyectos()">Actualizar</button>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Título</th>
-          <th>Ciudad</th>
-          <th>Precio</th>
-        </tr>
-      </thead>
-      <tbody id="tblProyectos"></tbody>
-    </table>
-  </div>
+<div class="container">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>TITULO</th>
+        <th>CIUDAD</th>
+        <th>PRECIO</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
 </div>
 
 <script>
 
 const API = "https://script.google.com/macros/s/AKfycbwWFcQ1nlVsLyiEOFMvSbYAxPHdAqSvKP1qMCvp1BrQkhb6ctod8oSShrj1cBKWzSc/exec";
 
-let dProp = [];
-let dProy = [];
+// ===================== NAVEGACIÓN =====================
+function mostrarModulo(modulo, btn){
 
-// NAV
-function verModulo(m, btn){
-  document.querySelectorAll('.module').forEach(e=>e.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
-  document.getElementById('mod-'+m).classList.add('active');
-  btn.classList.add('active');
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+
+  if(modulo === "propiedades") cargarPropiedades();
+  if(modulo === "proyectos") cargarProyectos();
+  if(modulo === "clientes") cargarClientes();
+  if(modulo === "tareas") cargarTareas();
 }
 
 // ===================== PROPIEDADES =====================
 async function cargarPropiedades(){
-  const r = await fetch(API+"?action=read_propiedades");
-  const j = await r.json();
-  dProp = j.data || [];
-  renderPropiedades();
+  const res = await fetch(API + "?action=read_propiedades");
+  const json = await res.json();
+
+  renderTabla(json.data);
 }
 
-function renderPropiedades(){
-  const tb = document.getElementById('tblPropiedades');
-
-  tb.innerHTML = dProp.map(i => `
-    <tr>
-      <td>${i.ID}</td>
-      <td>${i.TITULO}</td>
-      <td>${i.CIUDAD}</td>
-      <td>$ ${Number(i.PRECIO).toLocaleString()}</td>
-    </tr>
-  `).join('');
-}
-
-// ===================== PROYECTOS =====================
+// ===================== PROYECTOS 🔥 =====================
 async function cargarProyectos(){
-  const r = await fetch(API+"?action=read_proyectos");
-  const j = await r.json();
-  dProy = j.data || [];
-  renderProyectos();
+  const res = await fetch(API + "?action=read_proyectos");
+  const json = await res.json();
+
+  renderTabla(json.data);
 }
 
-function renderProyectos(){
-  const tb = document.getElementById('tblProyectos');
+// ===================== CLIENTES =====================
+async function cargarClientes(){
+  const res = await fetch(API + "?action=read_clientes");
+  const json = await res.json();
 
-  tb.innerHTML = dProy.map(i => `
-    <tr>
-      <td>${i.ID}</td>
-      <td>${i.TITULO}</td>
-      <td>${i.CIUDAD}</td>
-      <td>$ ${Number(i.PRECIO).toLocaleString()}</td>
-    </tr>
-  `).join('');
+  renderTabla(json.data);
+}
+
+// ===================== TAREAS =====================
+async function cargarTareas(){
+  const res = await fetch(API + "?action=read_tareas");
+  const json = await res.json();
+
+  renderTabla(json.data);
+}
+
+// ===================== RENDER GENERAL =====================
+function renderTabla(data){
+
+  const tabla = document.getElementById("tabla");
+
+  tabla.innerHTML = "";
+
+  if(!data || data.length === 0){
+    tabla.innerHTML = "<tr><td colspan='4'>Sin datos</td></tr>";
+    return;
+  }
+
+  data.forEach(p => {
+    tabla.innerHTML += `
+      <tr>
+        <td>${p.ID || "-"}</td>
+        <td>${p.TITULO || p.NOMBRE || "-"}</td>
+        <td>${p.CIUDAD || "-"}</td>
+        <td>$ ${p.PRECIO ? Number(p.PRECIO).toLocaleString() : "-"}</td>
+      </tr>
+    `;
+  });
+
 }
 
 // INIT
-cargarPropiedades();
+cargarTareas();
 
 </script>
 
